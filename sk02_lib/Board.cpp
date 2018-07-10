@@ -3,17 +3,21 @@
 
 
 Board::Board() :
-	cells_ptr_(std::make_unique<cells_t>())
+	cells_ptr_(std::make_unique<cells_t>()),
+	cell_sets_ptr_(std::make_unique<cell_sets_t>())
 {
 }
 
 Board::Board(const Board & rv) :
-	cells_ptr_(std::make_unique<cells_t>(*rv.cells_ptr_))
+	cells_ptr_(std::make_unique<cells_t>(*rv.cells_ptr_)),
+	cell_sets_ptr_(std::make_unique<cell_sets_t>(*rv.cell_sets_ptr_))
+
 {
 }
 
 Board::Board(Board && rv) :
-	cells_ptr_(std::move(rv.cells_ptr_))
+	cells_ptr_(std::move(rv.cells_ptr_)),
+	cell_sets_ptr_(std::move(rv.cell_sets_ptr_))
 {
 }
 
@@ -60,4 +64,46 @@ void Board::validate_indexes(
 	}
 }
 
+void Board::create_sets()
+{
+	// Create rows
+	for (int rx = 0; rx < BOARD_SIZE; ++rx)
+	{
+		CellRefSet new_set(eCellSetType::CS_ROW, rx);
+
+		for (int cx = 0; cx < BOARD_SIZE; ++cx)
+			new_set.add_cell((*cells_ptr_)[rx][cx]);
+
+		cell_sets_ptr_->push_back(new_set);
+	}
+
+	// Create columns
+	for (int cx = 0; cx < BOARD_SIZE; ++cx)
+	{
+		CellRefSet new_set(eCellSetType::CS_COLUMN, cx);
+
+		for (int rx = 0; rx < BOARD_SIZE; ++rx)
+			new_set.add_cell((*cells_ptr_)[rx][cx]);
+
+		cell_sets_ptr_->push_back(new_set);
+	}
+
+	// Create groups
+	const int step = BOARD_SIZE / GROUP_SIZE;
+	int group_idx = 0;
+	for (int rx = 0; rx < BOARD_SIZE; rx += step)
+	{
+		for (int cx = 0; cx < BOARD_SIZE; rx += step)
+		{
+			CellRefSet new_set(eCellSetType::CS_ROW, group_idx++);
+
+			for (int rj = 0; rj < step; ++rj)
+				for (int cj = 0; cj < step; ++cj)
+					new_set.add_cell((*cells_ptr_)[rx + rj][cx + cj]);
+
+			cell_sets_ptr_->push_back(new_set);
+		}
+	}
+
+}
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Cell.h"
+#include "CellRefSet.h"
 
 class Board
 {
@@ -17,8 +18,11 @@ public:
 
 private:
 	using cells_t = std::array<std::array<Cell, BOARD_SIZE>, BOARD_SIZE>;
+	using cell_sets_t = std::vector<CellRefSet>;
 
 	std::unique_ptr<cells_t> cells_ptr_;
+
+	std::unique_ptr<cell_sets_t> cell_sets_ptr_;
 
 	void validate_indexes(
 		const int rx, 
@@ -26,6 +30,7 @@ private:
 		const char * file_name,
 		const unsigned line_number) const;
 
+	void create_sets();
 
 };
 
