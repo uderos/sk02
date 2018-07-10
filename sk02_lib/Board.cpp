@@ -30,8 +30,8 @@ Cell & Board::operator()(const int rx, const int cx)
 
 bool Board::is_solved() const
 {
-	for (int rx = 0; rx < BOARD_NUM_NROWS; ++rx)
-		for (int cx = 0; cx < BOARD_NUM_NCOLS; ++cx)
+	for (int rx = 0; rx < BOARD_SIZE; ++rx)
+		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 			if (!(*cells_ptr_)[rx][cx].is_solved())
 				return false;
 	return true;
@@ -43,7 +43,7 @@ void Board::validate_indexes(
 	const char * file_name,
 	const unsigned line_number) const
 {
-	if ((rx < 0) || (rx >= BOARD_NUM_NROWS))
+	if ((rx < 0) || (rx >= BOARD_SIZE))
 	{
 		std::ostringstream oss;
 		oss << "Invalid row=" << rx
@@ -51,7 +51,7 @@ void Board::validate_indexes(
 		throw std::runtime_error(oss.str());
 	}
 
-	if ((cx < 0) || (cx >= BOARD_NUM_NCOLS))
+	if ((cx < 0) || (cx >= BOARD_SIZE))
 	{
 		std::ostringstream oss;
 		oss << "Invalid column=" << cx

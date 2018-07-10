@@ -7,6 +7,7 @@
 
 #define _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING
 
+#include <array>
 #include <bitset>
 #include <chrono>
 #include <iostream>

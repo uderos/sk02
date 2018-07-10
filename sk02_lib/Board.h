@@ -16,7 +16,7 @@ public:
 	bool is_solved() const;
 
 private:
-	using cells_t = std::array<std::array<Cell, BOARD_NUM_NCOLS>, BOARD_NUM_NROWS>;
+	using cells_t = std::array<std::array<Cell, BOARD_SIZE>, BOARD_SIZE>;
 
 	std::unique_ptr<cells_t> cells_ptr_;
 
