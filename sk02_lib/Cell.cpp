@@ -92,15 +92,14 @@ std::string Cell::to_string() const
 		oss << ')';
 	}
 
-	const std::string s(std::move(oss.str()));
-	const std::size_t l = s.length();
-	const std::size_t nleft = (str_len - l) / 2;
-	const std::size_t nright = (str_len - nleft - l);
+	const std::string temp_str(std::move(oss.str()));
+	const std::size_t temp_str_len = temp_str.length();
+	const std::size_t nleft  = (str_len - temp_str_len) / 2;
+	const std::size_t nright = (str_len - nleft - temp_str_len);
 
 	const std::string result = 	std::string(nleft, BLANK) + 
-								s + 
+								temp_str + 
 								std::string(nright, BLANK);
-
 	return result;
 }
 
