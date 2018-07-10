@@ -120,3 +120,18 @@ TEST(CellClassTest, ToString02)
 	EXPECT_EQ(gens.size(), EXP_LEN);
 	EXPECT_EQ(gens, exps);
 }
+
+TEST(CellRefSetTest, Constructor)
+{
+	Cell c;
+	CellRefSet row(eCellSetType::CS_ROW, 0);
+
+	row.add_cell(c);
+	Cell & cell_ref = row.get_cell(0);
+	EXPECT_EQ(&c, &cell_ref);
+	EXPECT_THROW(row.get_cell(1), std::runtime_error);
+
+	CellRefSet & row_ref = c.get_set(eCellSetType::CS_ROW);
+	EXPECT_EQ(&row, &row_ref);
+	EXPECT_THROW(c.get_set(eCellSetType::CS_COLUMN), std::runtime_error);
+}

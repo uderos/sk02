@@ -16,22 +16,11 @@ Cell::~Cell()
 {
 }
 
-void Cell::assign_to_set(CellRefSet * cell_set_ptr)
+void Cell::assign_to_set(
+	const eCellSetType type,
+	CellRefSet * cell_set_ptr)
 {
-	for (auto & p : set_ptr_list_)
-	{
-		if (p == cell_set_ptr)
-		{
-			;
-		}
-		else if (!p)
-		{
-			p = cell_set_ptr;
-			return;
-		}
-	}
-
-	throw std::runtime_error("Too many cell sets");
+	set_ptr_list_[type] = cell_set_ptr;
 }
 
 
@@ -90,22 +79,14 @@ bool Cell::has_candidate(const int digit) const
 	return result;
 }
 
-CellRefSet & Cell::get_set(const int set_idx)
+CellRefSet & Cell::get_set(const eCellSetType type)
 {
-	if ((set_idx < 0) || (set_idx >= set_ptr_list_.size()))
-	{
-		std::ostringstream oss;
-		oss << "Invalid cell set index=" << set_idx
-			<< " at " << __FILE__ << ":" << __LINE__;
-		throw std::runtime_error(oss.str());
-	}
-
-	auto set_ptr = set_ptr_list_[set_idx];
+	auto set_ptr = set_ptr_list_[type];
 
 	if (!set_ptr)
 	{
 		std::ostringstream oss;
-		oss << "Unavailable cell set index=" << set_idx
+		oss << "Unavailable cell set type=" << type
 			<< " at " << __FILE__ << ":" << __LINE__;
 		throw std::runtime_error(oss.str());
 	}

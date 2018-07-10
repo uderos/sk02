@@ -10,7 +10,9 @@ public:
 	CellRefSet(const eCellSetType type, const int index);
 	virtual ~CellRefSet();
 
-	void add_cell(Cell * cell_ptr);
+	void add_cell(Cell & cell);
+
+	Cell & get_cell(const int index);
 
 private:
 
