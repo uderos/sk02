@@ -71,6 +71,9 @@ bool Cell::has_candidate(const int digit) const
 
 std::string Cell::to_string() const
 {
+	static constexpr std::size_t str_len = 12;
+	static constexpr char BLANK = ' ';
+
 	std::ostringstream oss;
 
 	if (is_solved())
@@ -79,10 +82,26 @@ std::string Cell::to_string() const
 	}
 	else
 	{
-		oss << '(' << candidates_.to_string() << ')';
+		oss << '(';
+		for (std::size_t i = 0; i < candidates_.size(); ++i)
+		{
+			std::size_t d = candidates_.size() - i - 1;
+			if (candidates_.test(d))
+				oss << d;
+		}
+		oss << ')';
 	}
 
-	return oss.str();
+	const std::string s(std::move(oss.str()));
+	const std::size_t l = s.length();
+	const std::size_t nleft = (str_len - l) / 2;
+	const std::size_t nright = (str_len - nleft - l);
+
+	const std::string result = 	std::string(nleft, BLANK) + 
+								s + 
+								std::string(nright, BLANK);
+
+	return result;
 }
 
 void Cell::validate_digit(
