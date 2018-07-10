@@ -6,12 +6,34 @@ Cell::Cell() :
 	digit_(NULL_DIGIT_VALUE)
 {
 	candidates_.set();
+
+	for (auto & p : set_ptr_list_)
+		p = nullptr;
 }
 
 
 Cell::~Cell()
 {
 }
+
+void Cell::assign_to_set(CellRefSet * cell_set_ptr)
+{
+	for (auto & p : set_ptr_list_)
+	{
+		if (p == cell_set_ptr)
+		{
+			;
+		}
+		else if (!p)
+		{
+			p = cell_set_ptr;
+			return;
+		}
+	}
+
+	throw std::runtime_error("Too many cell sets");
+}
+
 
 void Cell::set(const int digit)
 {
@@ -68,9 +90,29 @@ bool Cell::has_candidate(const int digit) const
 	return result;
 }
 
-/////////////////////////////////////////////////////////////////////
-// PRIVATE METHODS
-/////////////////////////////////////////////////////////////////////
+CellRefSet & Cell::get_set(const int set_idx)
+{
+	if ((set_idx < 0) || (set_idx >= set_ptr_list_.size()))
+	{
+		std::ostringstream oss;
+		oss << "Invalid cell set index=" << set_idx
+			<< " at " << __FILE__ << ":" << __LINE__;
+		throw std::runtime_error(oss.str());
+	}
+
+	auto set_ptr = set_ptr_list_[set_idx];
+
+	if (!set_ptr)
+	{
+		std::ostringstream oss;
+		oss << "Unavailable cell set index=" << set_idx
+			<< " at " << __FILE__ << ":" << __LINE__;
+		throw std::runtime_error(oss.str());
+	}
+
+	return (*set_ptr);
+}
+
 
 std::string Cell::to_string() const
 {
@@ -105,6 +147,11 @@ std::string Cell::to_string() const
 								std::string(nright, BLANK);
 	return result;
 }
+
+
+/////////////////////////////////////////////////////////////////////
+// PRIVATE METHODS
+/////////////////////////////////////////////////////////////////////
 
 void Cell::validate_digit(
 	const int digit,

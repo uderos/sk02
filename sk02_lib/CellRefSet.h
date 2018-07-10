@@ -1,13 +1,16 @@
 #pragma once
 
 #include "common.h"
-#include "Cell.h"
+
+class Cell; // forward declaration
 
 class CellRefSet
 {
 public:
 	CellRefSet(const eCellSetType type, const int index);
 	virtual ~CellRefSet();
+
+	void add_cell(Cell * cell_ptr);
 
 private:
 
