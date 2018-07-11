@@ -44,6 +44,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="test02.cpp" />
+    <ClCompile Include="test03.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sk02_lib\sk02_lib.vcxproj">

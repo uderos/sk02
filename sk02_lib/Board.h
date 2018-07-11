@@ -17,6 +17,8 @@ public:
 
 	bool is_solved() const;
 
+	std::string to_string() const;
+
 private:
 	using cells_t = std::array<std::array<Cell, BOARD_SIZE>, BOARD_SIZE>;
 	using cell_sets_t = std::vector<CellRefSet>;

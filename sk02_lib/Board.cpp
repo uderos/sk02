@@ -121,3 +121,25 @@ void Board::create_sets()
 
 }
 
+std::string Board::to_string() const
+{
+	const std::string frame(BOARD_SIZE, '=');
+	std::ostringstream oss;
+
+	oss << frame << std::endl;
+
+	for (int rx = 0; rx < BOARD_SIZE; ++rx)
+	{
+		for (int cx = 0; cx < BOARD_SIZE; ++cx)
+		{
+			oss << (*cells_ptr_)[rx][cx].to_string();
+		}
+		oss << std::endl;
+	}
+
+
+	oss << frame << std::endl;
+
+	return oss.str();
+}
+

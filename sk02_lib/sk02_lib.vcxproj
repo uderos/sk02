@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BoardGenerator.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CellRefSet.h" />
     <ClInclude Include="common.h" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="BoardGenerator.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CellRefSet.cpp" />
     <ClCompile Include="stdafx.cpp">
