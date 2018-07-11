@@ -13,6 +13,7 @@ public:
 	virtual ~Board();
 
 	Cell & operator()(const int rx, const int cx);
+	CellRefSet & get_set(const int idx);
 
 	bool is_solved() const;
 

@@ -4,6 +4,8 @@ static const int NUM_DIGITS = 10; // 0, 1, ..., 9
 static const int BOARD_SIZE = 9;
 // static const int BOARD_NUM_NGROUPS = BOARD_SIZE;
 static const int GROUP_SIZE = 3;
+static const int BOARD_NUM_GROUPS = 9;
+static const int BOARD_NUM_SETS = BOARD_SIZE + BOARD_SIZE + BOARD_SIZE;
 
 enum eCellSetType
 {

@@ -6,6 +6,7 @@ Board::Board() :
 	cells_ptr_(std::make_unique<cells_t>()),
 	cell_sets_ptr_(std::make_unique<cell_sets_t>())
 {
+	create_sets();
 }
 
 Board::Board(const Board & rv) :
@@ -30,6 +31,19 @@ Cell & Board::operator()(const int rx, const int cx)
 	validate_indexes(rx, cx, __FILE__, __LINE__);
 
 	return (*cells_ptr_)[rx][cx];
+}
+
+CellRefSet & Board::get_set(const int idx)
+{
+	if ((idx < 0) || (idx >= int(cell_sets_ptr_->size())))
+	{
+		std::ostringstream oss;
+		oss << "Invalid set index=" << idx
+			<< " at " << __FILE__ << ':' << __LINE__;
+		throw std::runtime_error(oss.str());
+	}
+
+	return (*cell_sets_ptr_)[idx];
 }
 
 bool Board::is_solved() const
@@ -93,7 +107,7 @@ void Board::create_sets()
 	int group_idx = 0;
 	for (int rx = 0; rx < BOARD_SIZE; rx += step)
 	{
-		for (int cx = 0; cx < BOARD_SIZE; rx += step)
+		for (int cx = 0; cx < BOARD_SIZE; cx += step)
 		{
 			CellRefSet new_set(eCellSetType::CS_ROW, group_idx++);
 
