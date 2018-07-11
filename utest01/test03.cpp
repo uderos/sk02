@@ -27,8 +27,21 @@ TEST(BoardGeneratorTest, FromString01)
 
 	Board & b(*board_ptr);
 
-	std::cout << b.to_string() << std::endl;
+//	std::cout << b.to_string() << std::endl;
 
-	EXPECT_TRUE(b(0, 0).is_solved());
-	EXPECT_EQ(b(0, 0).get(), 1);
+	for (int rx = 0; rx < 3; ++rx)
+	{
+		for (int cx = 0; cx < 3; ++cx)
+		{
+			if (text[rx][cx] == '.')
+			{
+				EXPECT_FALSE(b(rx, cx).is_solved());
+			}
+			else
+			{
+				EXPECT_TRUE(b(rx, cx).is_solved());
+				EXPECT_EQ(b(rx, cx).get(), int(text[rx][cx] - '0'));
+			}
+		}
+	}
 }
