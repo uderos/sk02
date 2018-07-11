@@ -7,10 +7,8 @@ TEST(BoardTest, Constructor)
 	EXPECT_FALSE(b.is_solved());
 }
 
-TEST(BoardTest, TestSetGeneration)
+static void f_test_board_sets(Board & b)
 {
-	Board b;
-
 	// test rows
 	int idx = 0;
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
@@ -30,7 +28,7 @@ TEST(BoardTest, TestSetGeneration)
 		for (int rx = 0; rx < BOARD_SIZE; ++rx)
 		{
 			Cell * cell_ptr = (&column.get_cell(rx));
-			EXPECT_EQ(cell_ptr, &b(rx,cx));
+			EXPECT_EQ(cell_ptr, &b(rx, cx));
 		}
 	}
 
@@ -47,15 +45,33 @@ TEST(BoardTest, TestSetGeneration)
 			{
 				Cell * group_cell_ptr = (&group.get_cell(cell_idx++));
 
-				const int rx = (3*(gx / 3)) + rj;
-				const int cx =  (3*(gx % 3)) + cj;
+				const int rx = (3 * (gx / 3)) + rj;
+				const int cx = (3 * (gx % 3)) + cj;
 				// std::cout << "gx=" << gx << " rx=" << rx << " cx=" << cx << std::endl;
 
-				Cell * board_cell_ptr = &b(rx,cx);
+				Cell * board_cell_ptr = &b(rx, cx);
 				EXPECT_EQ(group_cell_ptr, board_cell_ptr);
 			}
 		}
 	}
+}
+
+TEST(BoardTest, TestSetGeneration)
+{
+	Board b;
+
+	f_test_board_sets(b);
+}
+
+TEST(BoardTest, TestCopy)
+{
+	Board * b1_ptr = new Board;
+	f_test_board_sets(*b1_ptr);
+
+	Board * b2_ptr = new Board(*b1_ptr);
+	delete b1_ptr;
+	b1_ptr = nullptr;
+	f_test_board_sets(*b2_ptr);
 }
 
 TEST(BoardTest, IsSolved)

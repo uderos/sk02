@@ -11,9 +11,9 @@ Board::Board() :
 
 Board::Board(const Board & rv) :
 	cells_ptr_(std::make_unique<cells_t>(*rv.cells_ptr_)),
-	cell_sets_ptr_(std::make_unique<cell_sets_t>(*rv.cell_sets_ptr_))
-
+	cell_sets_ptr_(std::make_unique<cell_sets_t>())
 {
+	create_sets();
 }
 
 Board::Board(Board && rv) :
