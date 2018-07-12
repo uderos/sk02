@@ -13,6 +13,8 @@ public:
 	CellRefSet(const eCellSetType type, const int index);
 	virtual ~CellRefSet();
 
+	eCellSetType get_type() const;
+
 	void add_cell(Cell & cell);
 
 	Cell & get_cell(const int index);

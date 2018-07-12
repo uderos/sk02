@@ -15,6 +15,12 @@ CellRefSet::~CellRefSet()
 {
 }
 
+eCellSetType CellRefSet::get_type() const
+{
+	return type_;
+}
+
+
 void CellRefSet::add_cell(Cell & cell)
 {
 	Cell * cell_ptr(&cell);

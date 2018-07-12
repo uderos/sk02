@@ -17,6 +17,7 @@ public:
 
 	Cell & operator()(const int rx, const int cx);
 	CellRefSet & get_set(const int idx);
+	CellRefSet & get_set(const eCellSetType type, const int idx);
 
 	bool is_solved() const;
 

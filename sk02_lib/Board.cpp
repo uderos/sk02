@@ -46,6 +46,26 @@ CellRefSet & Board::get_set(const int idx)
 	return (*cell_sets_ptr_)[idx];
 }
 
+CellRefSet & Board::get_set(const eCellSetType type, const int idx)
+{
+	int counter = 0;
+
+	for (int i = 0; i < int(cell_sets_ptr_->size()); ++i)
+	{
+		if ((*cell_sets_ptr_)[i].get_type() == type)
+		{
+			if (counter == idx)
+				return (*cell_sets_ptr_)[i];
+			++counter;
+		}
+	}
+
+	std::ostringstream oss;
+	oss << "Set not found type=" << type << " idx=" << idx
+		<< " at " << __FILE__ << ':' << __LINE__;
+	throw std::runtime_error(oss.str());
+}
+
 bool Board::is_solved() const
 {
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
