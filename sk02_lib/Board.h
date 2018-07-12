@@ -6,6 +6,9 @@
 class Board
 {
 public:
+
+	enum { NUM_CELL_SETS = BOARD_SIZE + BOARD_SIZE + BOARD_SIZE };
+
 	Board();
 	Board(const Board & rv);
 	Board(Board && rv);

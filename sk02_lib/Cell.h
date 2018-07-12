@@ -12,13 +12,13 @@ public:
 
 	void assign_to_set(const eCellSetType type, CellRefSet * cell_set_ptr);
 
-	void set(const int digit);
+	bool set(const int digit);
 
 	int get() const;
 
 	bool is_solved() const;
 
-	void clear_candidate(const int digit);
+	bool clear_candidate(const int digit);
 
 	bool has_candidate(const int digit) const;
 

@@ -24,11 +24,15 @@ void Cell::assign_to_set(
 }
 
 
-void Cell::set(const int digit)
+bool Cell::set(const int digit)
 {
 	validate_digit(digit, __FILE__, __LINE__);
 
+	const bool cell_updated = (!is_solved());
+
 	digit_ = digit;
+
+	return cell_updated;
 }
 
 int Cell::get() const
@@ -44,9 +48,11 @@ bool Cell::is_solved() const
 	return (digit_ != NULL_DIGIT_VALUE);
 }
 
-void Cell::clear_candidate(const int digit)
+bool Cell::clear_candidate(const int digit)
 {
 	validate_digit(digit, __FILE__, __LINE__);
+
+	const bool cell_updated = candidates_.test(digit);
 
 	candidates_.reset(digit);
 
@@ -67,6 +73,8 @@ void Cell::clear_candidate(const int digit)
 			}
 		}
 	}
+
+	return cell_updated;
 }
 
 bool Cell::has_candidate(const int digit) const

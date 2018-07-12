@@ -45,6 +45,7 @@
     </ClCompile>
     <ClCompile Include="test02.cpp" />
     <ClCompile Include="test03.cpp" />
+    <ClCompile Include="test04.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sk02_lib\sk02_lib.vcxproj">

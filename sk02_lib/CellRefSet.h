@@ -7,6 +7,9 @@ class Cell; // forward declaration
 class CellRefSet
 {
 public:
+
+	enum { NUM_CELLS = BOARD_SIZE };
+
 	CellRefSet(const eCellSetType type, const int index);
 	virtual ~CellRefSet();
 
@@ -16,7 +19,7 @@ public:
 
 private:
 
-	using cell_ptr_t = std::array<Cell *, BOARD_SIZE>;
+	using cell_ptr_t = std::array<Cell *, NUM_CELLS>;
 
 	const eCellSetType type_;
 	const int index_;
