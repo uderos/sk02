@@ -40,7 +40,9 @@ TEST(BoardGeneratorTest, FromString01)
 			else
 			{
 				EXPECT_TRUE(b(rx, cx).is_solved());
-				EXPECT_EQ(b(rx, cx).get(), int(text[rx][cx] - '0'));
+				const int expected_value = int(text[rx][cx] - '0') - 1;
+				const int actual_value = b(rx, cx).get();
+				EXPECT_EQ(actual_value, expected_value);
 			}
 		}
 	}

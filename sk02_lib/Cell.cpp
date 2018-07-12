@@ -105,14 +105,14 @@ CellRefSet & Cell::get_set(const eCellSetType type)
 
 std::string Cell::to_string() const
 {
-	static constexpr std::size_t str_len = 12;
+	static constexpr std::size_t STR_LEN = 11;
 	static constexpr char BLANK = ' ';
 
 	std::ostringstream oss;
 
 	if (is_solved())
 	{
-		oss << '[' << digit_ << ']';
+		oss << '[' << 1 + digit_ << ']';
 	}
 	else
 	{
@@ -121,19 +121,20 @@ std::string Cell::to_string() const
 		{
 			std::size_t d = candidates_.size() - i - 1;
 			if (candidates_.test(d))
-				oss << d;
+				oss << 1 + d;
 		}
 		oss << ')';
 	}
 
 	const std::string temp_str(std::move(oss.str()));
 	const std::size_t temp_str_len = temp_str.length();
-	const std::size_t nleft  = (str_len - temp_str_len) / 2;
-	const std::size_t nright = (str_len - nleft - temp_str_len);
+	const std::size_t nleft  = (STR_LEN - temp_str_len) / 2;
+	const std::size_t nright = (STR_LEN - nleft - temp_str_len);
 
 	const std::string result = 	std::string(nleft, BLANK) + 
 								temp_str + 
 								std::string(nright, BLANK);
+
 	return result;
 }
 
