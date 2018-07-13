@@ -7,6 +7,9 @@ class CellRefSet; // forward declaration
 class Cell
 {
 public:
+
+	using cell_candidates_t = std::bitset<NUM_DIGITS>;
+
 	Cell();
 	virtual ~Cell();
 
@@ -19,10 +22,13 @@ public:
 	bool is_solved() const;
 
 	bool clear_candidate(const int digit);
+	bool clear_candidate(const cell_candidates_t & target_candidates);
 
 	bool has_candidate(const int digit) const;
 
 	CellRefSet & get_set(const eCellSetType type);
+
+	const cell_candidates_t & get_candidates() const;
 
 	std::string to_string() const;
 
@@ -32,7 +38,7 @@ private:
 
 	int digit_;
 
-	std::bitset<NUM_DIGITS> candidates_;
+	cell_candidates_t candidates_;
 
 	std::array<CellRefSet *, NUM_CELL_SET_TYPES> set_ptr_list_;
 

@@ -42,7 +42,21 @@ void CellRefSet::add_cell(Cell & cell)
 	throw std::runtime_error("Too many cells in set");
 }
 
+const Cell & CellRefSet::get_cell(const int index) const
+{
+	validate_cell_index(index);
+
+	return *(cell_ptr_list_[index]);
+}
+
 Cell & CellRefSet::get_cell(const int index)
+{
+	validate_cell_index(index);
+
+	return *(cell_ptr_list_[index]);
+}
+
+void CellRefSet::validate_cell_index(const int index) const
 {
 	if ((index < 0) ||
 		(std::size_t(index) >= cell_ptr_list_.size()))
@@ -62,8 +76,6 @@ Cell & CellRefSet::get_cell(const int index)
 			<< " at " << __FILE__ << ':' << __LINE__;
 		throw std::runtime_error(oss.str());
 	}
-
-	return *(cell_ptr_list_[index]);
 }
 
 

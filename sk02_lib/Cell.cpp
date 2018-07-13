@@ -77,6 +77,17 @@ bool Cell::clear_candidate(const int digit)
 	return cell_updated;
 }
 
+bool Cell::clear_candidate(const Cell::cell_candidates_t & target_candidates)
+{
+	bool cell_updated = false;
+
+	for (int digit = 0; digit < int(target_candidates.size()); ++digit)
+		if (target_candidates.test(digit))
+			cell_updated = clear_candidate(digit) || cell_updated;
+
+	return cell_updated;
+}
+
 bool Cell::has_candidate(const int digit) const
 {
 	validate_digit(digit, __FILE__, __LINE__);
@@ -100,6 +111,11 @@ CellRefSet & Cell::get_set(const eCellSetType type)
 	}
 
 	return (*set_ptr);
+}
+
+const Cell::cell_candidates_t & Cell::get_candidates() const
+{
+	return candidates_;
 }
 
 

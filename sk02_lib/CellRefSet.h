@@ -17,6 +17,7 @@ public:
 
 	void add_cell(Cell & cell);
 
+	const Cell & get_cell(const int index) const;
 	Cell & get_cell(const int index);
 
 private:
@@ -28,5 +29,6 @@ private:
 
 	cell_ptr_t cell_ptr_list_;
 
+	void validate_cell_index(const int index) const;
 };
 
