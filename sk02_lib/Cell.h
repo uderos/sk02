@@ -46,5 +46,7 @@ private:
 		const int digit, 
 		const char * file_name, 
 		const unsigned line_number) const;
+
+	void set_dirty_flags();
 };
 

@@ -20,6 +20,10 @@ public:
 	const Cell & get_cell(const int index) const;
 	Cell & get_cell(const int index);
 
+	void set_dirty_flag();
+	void clear_dirty_flag();
+	bool get_dirty_flag() const;
+
 private:
 
 	using cell_ptr_t = std::array<Cell *, NUM_CELLS>;
@@ -28,6 +32,8 @@ private:
 	const int index_;
 
 	cell_ptr_t cell_ptr_list_;
+
+	bool dirty_flag_;
 
 	void validate_cell_index(const int index) const;
 };

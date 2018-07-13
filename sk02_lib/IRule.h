@@ -9,6 +9,6 @@ public:
 	IRule() = default;
 	virtual ~IRule() = default;
 
-	virtual bool execute(Board & board) const = 0;
-	virtual bool execute(CellRefSet & cell_set) const = 0;
+	virtual void execute(Board & board) const = 0;
+	virtual void execute(CellRefSet & cell_set) const = 0;
 };

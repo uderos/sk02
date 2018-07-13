@@ -12,34 +12,24 @@ RuleCandidateTuples::~RuleCandidateTuples()
 {
 }
 
-bool RuleCandidateTuples::execute(Board & board) const
+void RuleCandidateTuples::execute(Board & board) const 
 {
-	bool board_updated = false;
 	for (int idx = 0; idx < Board::NUM_CELL_SETS; ++idx)
 	{
 		CellRefSet & cell_set(board.get_set(idx));
 
-		if (update_single_set(cell_set))
-		{
-			board_updated = true;
-		}
+		update_single_set(cell_set);
 	}
-
-	return board_updated;
 }
 
-bool RuleCandidateTuples::execute(CellRefSet & cell_set) const
+void RuleCandidateTuples::execute(CellRefSet & cell_set) const
 {
-	const bool board_updated = update_single_set(cell_set);
-
-	return board_updated;
+	update_single_set(cell_set);
 }
 
 
-bool RuleCandidateTuples::update_single_set(CellRefSet & cell_set) const
+void RuleCandidateTuples::update_single_set(CellRefSet & cell_set) const
 {
-	bool cell_updated = false;
-
 	for (int i = 0; i < CellRefSet::NUM_CELLS; ++i)
 	{
 		Cell & target_cell = cell_set.get_cell(i);
@@ -50,11 +40,8 @@ bool RuleCandidateTuples::update_single_set(CellRefSet & cell_set) const
 		{
 //			std::cout << "Tuple found for cell " << i << std::endl; // UBEDEBUG
 			clear_tuple(cell_set, target_cell);
-			cell_updated = true;
 		}
 	}
-
-	return cell_updated;
 }
 
 bool RuleCandidateTuples::is_tuple_found(

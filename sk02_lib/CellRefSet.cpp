@@ -4,8 +4,9 @@
 
 
 CellRefSet::CellRefSet(const eCellSetType type, const int index) :
-	type_(type), 
-	index_(index)
+	type_(type),
+	index_(index),
+	dirty_flag_(false)
 {
 	for (auto & p : cell_ptr_list_)
 		p = nullptr;
@@ -55,6 +56,22 @@ Cell & CellRefSet::get_cell(const int index)
 
 	return *(cell_ptr_list_[index]);
 }
+
+void CellRefSet::set_dirty_flag()
+{
+	dirty_flag_ = true;
+}
+
+void CellRefSet::clear_dirty_flag()
+{
+	dirty_flag_ = false;
+}
+
+bool CellRefSet::get_dirty_flag() const
+{
+	return dirty_flag_;
+}
+
 
 void CellRefSet::validate_cell_index(const int index) const
 {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Cell.h"
-
+#include "CellRefSet.h"
 
 Cell::Cell() :
 	digit_(NULL_DIGIT_VALUE)
@@ -32,6 +32,9 @@ bool Cell::set(const int digit)
 
 	digit_ = digit;
 
+	if (cell_updated)
+		set_dirty_flags();
+
 	return cell_updated;
 }
 
@@ -56,6 +59,9 @@ bool Cell::clear_candidate(const int digit)
 
 	candidates_.reset(digit);
 
+	if (cell_updated)
+		set_dirty_flags();
+
 	if (!is_solved())
 	{
 		if (!candidates_.any())
@@ -73,6 +79,9 @@ bool Cell::clear_candidate(const int digit)
 			}
 		}
 	}
+
+	if (cell_updated)
+		set_dirty_flags();
 
 	return cell_updated;
 }
@@ -172,5 +181,11 @@ void Cell::validate_digit(
 			<< ":" << line_number;
 		throw std::runtime_error(oss.str());
 	}
+}
+
+void Cell::set_dirty_flags()
+{
+	for (auto set_ptr : set_ptr_list_)
+		set_ptr->set_dirty_flag();
 }
 
