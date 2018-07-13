@@ -22,12 +22,19 @@ bool RuleCandidateTuples::execute(Board & board) const
 		if (update_single_set(cell_set))
 		{
 			board_updated = true;
-//			std::cout << "Tuple found for set " << idx << std::endl; // UBEDEBUG
 		}
 	}
 
 	return board_updated;
 }
+
+bool RuleCandidateTuples::execute(CellRefSet & cell_set) const
+{
+	const bool board_updated = update_single_set(cell_set);
+
+	return board_updated;
+}
+
 
 bool RuleCandidateTuples::update_single_set(CellRefSet & cell_set) const
 {

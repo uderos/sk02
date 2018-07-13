@@ -26,6 +26,13 @@ bool RuleUpdateCandidates::execute(Board & board) const
 	return board_updated;
 }
 
+bool RuleUpdateCandidates::execute(CellRefSet & cell_set) const
+{
+	const bool board_updated = update_single_set(cell_set);
+
+	return board_updated;
+}
+
 bool RuleUpdateCandidates::update_single_set(CellRefSet & cell_set) const
 {
 	bool cell_updated = false;

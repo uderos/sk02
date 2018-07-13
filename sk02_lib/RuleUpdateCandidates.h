@@ -7,6 +7,7 @@ public:
 	virtual ~RuleUpdateCandidates();
 
 	virtual bool execute(Board & board) const override;
+	virtual bool execute(CellRefSet & cell_set) const override;
 
 private:
 
