@@ -60,7 +60,9 @@ bool RuleCandidateTuples::is_tuple_found(
 			++counter;
 	}
 
-	const bool tuple_found = (counter > 1) && (counter == target_tuple.count());
+	const bool tuple_found = (counter > 1) &&
+							 (counter < NUM_DIGITS - 1) &&
+							 (counter == target_tuple.count());
 
 	return tuple_found;
 }
