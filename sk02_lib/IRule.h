@@ -10,5 +10,5 @@ public:
 	virtual ~IRule() = default;
 
 	virtual void execute(Board & board) const = 0;
-	virtual void execute(CellRefSet & cell_set) const = 0;
+	virtual void execute(Board & board, CellRefSet & cell_set) const = 0;
 };
