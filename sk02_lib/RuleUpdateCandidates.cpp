@@ -19,16 +19,16 @@ void RuleUpdateCandidates::execute(Board & board) const
 	{
 		CellRefSet & cell_set(board.get_set(idx));
 
-		update_single_set(cell_set);
+		update_single_set(board, cell_set);
 	}
 }
 
-void RuleUpdateCandidates::execute(CellRefSet & cell_set) const
+void RuleUpdateCandidates::execute(Board & board, CellRefSet & cell_set) const
 {
-	update_single_set(cell_set);
+	update_single_set(board, cell_set);
 }
 
-void RuleUpdateCandidates::update_single_set(CellRefSet & cell_set) const
+void RuleUpdateCandidates::update_single_set(Board & board, CellRefSet & cell_set) const
 {
 	for (int i = 0; i < CellRefSet::NUM_CELLS; ++i)
 	{
@@ -43,7 +43,12 @@ void RuleUpdateCandidates::update_single_set(CellRefSet & cell_set) const
 					Cell & target_cell = cell_set.get_cell(j);
 
 					if (!target_cell.is_solved())
-						target_cell.clear_candidate(source_cell.get());
+					{
+						const bool cell_updated = target_cell.clear_candidate(source_cell.get());
+						if (cell_updated)
+							board.cell_updated_notify(target_cell);
+
+					}
 				}
 			}
 		}

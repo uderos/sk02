@@ -6,23 +6,12 @@ Cell::Cell() :
 	digit_(NULL_DIGIT_VALUE)
 {
 	candidates_.set();
-
-	for (auto & p : set_ptr_list_)
-		p = nullptr;
 }
 
 
 Cell::~Cell()
 {
 }
-
-void Cell::assign_to_set(
-	const eCellSetType type,
-	CellRefSet * cell_set_ptr)
-{
-	set_ptr_list_[type] = cell_set_ptr;
-}
-
 
 bool Cell::set(const int digit)
 {
@@ -31,9 +20,6 @@ bool Cell::set(const int digit)
 	const bool cell_updated = (!is_solved());
 
 	digit_ = digit;
-
-	if (cell_updated)
-		set_dirty_flags();
 
 	return cell_updated;
 }
@@ -59,9 +45,6 @@ bool Cell::clear_candidate(const int digit)
 
 	candidates_.reset(digit);
 
-	if (cell_updated)
-		set_dirty_flags();
-
 	if (!is_solved())
 	{
 		if (!candidates_.any())
@@ -79,9 +62,6 @@ bool Cell::clear_candidate(const int digit)
 			}
 		}
 	}
-
-	if (cell_updated)
-		set_dirty_flags();
 
 	return cell_updated;
 }
@@ -105,21 +85,6 @@ bool Cell::has_candidate(const int digit) const
 		(digit == digit_) : candidates_.test(digit));
 
 	return result;
-}
-
-CellRefSet & Cell::get_set(const eCellSetType type)
-{
-	auto set_ptr = set_ptr_list_[type];
-
-	if (!set_ptr)
-	{
-		std::ostringstream oss;
-		oss << "Unavailable cell set type=" << type
-			<< " at " << __FILE__ << ":" << __LINE__;
-		throw std::runtime_error(oss.str());
-	}
-
-	return (*set_ptr);
 }
 
 const Cell::cell_candidates_t & Cell::get_candidates() const
@@ -182,10 +147,3 @@ void Cell::validate_digit(
 		throw std::runtime_error(oss.str());
 	}
 }
-
-void Cell::set_dirty_flags()
-{
-	for (auto set_ptr : set_ptr_list_)
-		set_ptr->set_dirty_flag();
-}
-

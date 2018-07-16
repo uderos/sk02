@@ -18,17 +18,17 @@ void RuleCandidateTuples::execute(Board & board) const
 	{
 		CellRefSet & cell_set(board.get_set(idx));
 
-		update_single_set(cell_set);
+		update_single_set(board, cell_set);
 	}
 }
 
-void RuleCandidateTuples::execute(CellRefSet & cell_set) const
+void RuleCandidateTuples::execute(Board & board, CellRefSet & cell_set) const
 {
-	update_single_set(cell_set);
+	update_single_set(board, cell_set);
 }
 
 
-void RuleCandidateTuples::update_single_set(CellRefSet & cell_set) const
+void RuleCandidateTuples::update_single_set(Board & board, CellRefSet & cell_set) const
 {
 	for (int i = 0; i < CellRefSet::NUM_CELLS; ++i)
 	{
@@ -39,7 +39,7 @@ void RuleCandidateTuples::update_single_set(CellRefSet & cell_set) const
 		if (has_tuple)
 		{
 //			std::cout << "Tuple found for cell " << i << std::endl; // UBEDEBUG
-			clear_tuple(cell_set, target_cell);
+			clear_tuple(board, cell_set, target_cell);
 		}
 	}
 }
@@ -66,6 +66,7 @@ bool RuleCandidateTuples::is_tuple_found(
 }
 
 void RuleCandidateTuples::clear_tuple(
+	Board & board,
 	CellRefSet & cell_set,
 	Cell& target_cell) const
 {
@@ -79,7 +80,9 @@ void RuleCandidateTuples::clear_tuple(
 			if (cell.get_candidates() != target_tuple)
 			{
 //				std::cout << "Clearing cell " << i << std::endl; // UBEDEBUG
-				cell.clear_candidate(target_tuple);
+				const bool cell_updated = cell.clear_candidate(target_tuple);
+				if (cell_updated)
+					board.cell_updated_notify(cell);
 			}
 		}
 	}
