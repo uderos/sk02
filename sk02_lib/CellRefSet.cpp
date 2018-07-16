@@ -35,7 +35,6 @@ void CellRefSet::add_cell(Cell & cell)
 		else if (!p)
 		{
 			p = cell_ptr;
-			cell_ptr->assign_to_set(type_, this);
 			return;
 		}
 	}

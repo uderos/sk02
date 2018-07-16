@@ -3,22 +3,19 @@
 
 
 Board::Board() :
-	cells_ptr_(std::make_unique<cells_t>()),
-	cell_sets_ptr_(std::make_unique<cell_sets_t>())
+	cells_ptr_(std::make_unique<cells_t>())
 {
 	create_sets();
 }
 
 Board::Board(const Board & rv) :
-	cells_ptr_(std::make_unique<cells_t>(*rv.cells_ptr_)),
-	cell_sets_ptr_(std::make_unique<cell_sets_t>())
+	cells_ptr_(std::make_unique<cells_t>(*rv.cells_ptr_))
 {
 	create_sets();
 }
 
 Board::Board(Board && rv) :
-	cells_ptr_(std::move(rv.cells_ptr_)),
-	cell_sets_ptr_(std::move(rv.cell_sets_ptr_))
+	cells_ptr_(std::move(rv.cells_ptr_))
 {
 }
 
@@ -28,14 +25,28 @@ Board::~Board()
 
 Cell & Board::operator()(const int rx, const int cx)
 {
+	return get_cell(rx, cx);
+}
+
+Cell & Board::get_cell(const int rx, const int cx)
+{
 	validate_indexes(rx, cx, __FILE__, __LINE__);
 
-	return (*cells_ptr_)[rx][cx];
+	const int idx = (rx * BOARD_SIZE) + cx;
+	return (*cells_ptr_)[idx];
+}
+
+const Cell & Board::get_cell(const int rx, const int cx) const
+{
+	validate_indexes(rx, cx, __FILE__, __LINE__);
+
+	const int idx = (rx * BOARD_SIZE) + cx;
+	return (*cells_ptr_)[idx];
 }
 
 CellRefSet & Board::get_set(const int idx)
 {
-	if ((idx < 0) || (idx >= int(cell_sets_ptr_->size())))
+	if ((idx < 0) || (idx >= (BOARD_SIZE * NUM_CELL_SET_TYPES)))
 	{
 		std::ostringstream oss;
 		oss << "Invalid set index=" << idx
@@ -43,34 +54,21 @@ CellRefSet & Board::get_set(const int idx)
 		throw std::runtime_error(oss.str());
 	}
 
-	return (*cell_sets_ptr_)[idx];
+	const int type_idx = idx / BOARD_SIZE;
+	const int set_idx = idx % BOARD_SIZE;
+
+	return *(sets_[type_idx][set_idx]);
 }
 
 CellRefSet & Board::get_set(const eCellSetType type, const int idx)
 {
-	int counter = 0;
-
-	for (int i = 0; i < int(cell_sets_ptr_->size()); ++i)
-	{
-		if ((*cell_sets_ptr_)[i].get_type() == type)
-		{
-			if (counter == idx)
-				return (*cell_sets_ptr_)[i];
-			++counter;
-		}
-	}
-
-	std::ostringstream oss;
-	oss << "Set not found type=" << type << " idx=" << idx
-		<< " at " << __FILE__ << ':' << __LINE__;
-	throw std::runtime_error(oss.str());
+	return *(sets_[type][idx]);
 }
 
 bool Board::is_solved() const
 {
-	for (int rx = 0; rx < BOARD_SIZE; ++rx)
-		for (int cx = 0; cx < BOARD_SIZE; ++cx)
-			if (!(*cells_ptr_)[rx][cx].is_solved())
+	for (std::size_t idx = 0; idx < cells_ptr_->size(); ++idx)
+			if (!(*cells_ptr_)[idx].is_solved())
 				return false;
 	return true;
 }
@@ -103,23 +101,23 @@ void Board::create_sets()
 	// Create rows
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
 	{
-		CellRefSet new_set(eCellSetType::CS_ROW, rx);
+		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_ROW, rx);
 
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
-			new_set.add_cell((*cells_ptr_)[rx][cx]);
+			new_set_ptr->add_cell(get_cell(rx, cx));
 
-		cell_sets_ptr_->push_back(new_set);
+		sets_[eCellSetType::CS_ROW][rx] = std::move(new_set_ptr);
 	}
 
 	// Create columns
 	for (int cx = 0; cx < BOARD_SIZE; ++cx)
 	{
-		CellRefSet new_set(eCellSetType::CS_COLUMN, cx);
+		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_COLUMN, cx);
 
 		for (int rx = 0; rx < BOARD_SIZE; ++rx)
-			new_set.add_cell((*cells_ptr_)[rx][cx]);
+			new_set_ptr->add_cell(get_cell(rx, cx));
 
-		cell_sets_ptr_->push_back(new_set);
+		sets_[eCellSetType::CS_COLUMN][cx] = std::move(new_set_ptr);
 	}
 
 	// Create groups
@@ -129,16 +127,15 @@ void Board::create_sets()
 	{
 		for (int cx = 0; cx < BOARD_SIZE; cx += step)
 		{
-			CellRefSet new_set(eCellSetType::CS_ROW, group_idx++);
+			auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_GROUP, cx);
 
 			for (int rj = 0; rj < step; ++rj)
 				for (int cj = 0; cj < step; ++cj)
-					new_set.add_cell((*cells_ptr_)[rx + rj][cx + cj]);
+					new_set_ptr->add_cell(get_cell(rx + rj, cx + cj));
 
-			cell_sets_ptr_->push_back(new_set);
+			sets_[eCellSetType::CS_GROUP][group_idx++] = std::move(new_set_ptr);
 		}
 	}
-
 }
 
 std::string Board::to_string() const
@@ -152,7 +149,7 @@ std::string Board::to_string() const
 	{
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 		{
-			oss << (*cells_ptr_)[rx][cx].to_string();
+			oss << get_cell(rx, cx).to_string();
 		}
 		oss << std::endl;
 	}
@@ -162,4 +159,33 @@ std::string Board::to_string() const
 
 	return oss.str();
 }
+
+void Board::cell_updated_notify(Cell & cell)
+{
+	const Cell * cell_ptr(&cell);
+	const Cell * first_cell_ptr = &((*cells_ptr_)[0]);
+	const std::ptrdiff_t ptr_diff = (cell_ptr - first_cell_ptr);
+	const unsigned int ptr_diff_uint = static_cast<unsigned int>(ptr_diff);
+	const auto idx = ptr_diff_uint / sizeof(&cell);
+
+	const int rx = idx / BOARD_SIZE;
+	const int cx = idx % BOARD_SIZE;
+	const int grx = (cx / GROUP_SIZE) + (BOARD_SIZE * (rx / BOARD_SIZE));
+
+	dirty_sets.insert(sets_[eCellSetType::CS_ROW][rx].get());
+}
+
+CellRefSet * Board::get_next_dirty_set()
+{
+	CellRefSet * set_ptr = nullptr;
+
+	if (!dirty_sets.empty())
+	{
+		set_ptr = *(dirty_sets.begin());
+		dirty_sets.erase(set_ptr);
+	}
+
+	return set_ptr;
+}
+
 

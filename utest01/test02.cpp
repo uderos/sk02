@@ -10,10 +10,9 @@ TEST(BoardTest, Constructor)
 static void f_test_board_sets(Board & b)
 {
 	// test rows
-	int idx = 0;
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
 	{
-		CellRefSet & row = b.get_set(idx++);
+		CellRefSet & row = b.get_set(eCellSetType::CS_ROW, rx);
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 		{
 			Cell * cell_ptr = (&row.get_cell(cx));
@@ -24,7 +23,7 @@ static void f_test_board_sets(Board & b)
 	// test columns
 	for (int cx = 0; cx < BOARD_SIZE; ++cx)
 	{
-		CellRefSet & column = b.get_set(idx++);
+		CellRefSet & column = b.get_set(eCellSetType::CS_COLUMN, cx);
 		for (int rx = 0; rx < BOARD_SIZE; ++rx)
 		{
 			Cell * cell_ptr = (&column.get_cell(rx));
@@ -36,7 +35,7 @@ static void f_test_board_sets(Board & b)
 	const int step = BOARD_SIZE / GROUP_SIZE;
 	for (int gx = 0; gx < BOARD_SIZE; ++gx)
 	{
-		CellRefSet & group = b.get_set(idx++);
+		CellRefSet & group = b.get_set(eCellSetType::CS_GROUP, gx);
 
 		int cell_idx = 0;
 		for (int rj = 0; rj < step; ++rj)

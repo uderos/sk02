@@ -130,8 +130,4 @@ TEST(CellRefSetTest, Constructor)
 	Cell & cell_ref = row.get_cell(0);
 	EXPECT_EQ(&c, &cell_ref);
 	EXPECT_THROW(row.get_cell(1), std::runtime_error);
-
-	CellRefSet & row_ref = c.get_set(eCellSetType::CS_ROW);
-	EXPECT_EQ(&row, &row_ref);
-	EXPECT_THROW(c.get_set(eCellSetType::CS_COLUMN), std::runtime_error);
 }
