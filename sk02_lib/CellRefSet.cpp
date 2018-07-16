@@ -39,7 +39,7 @@ void CellRefSet::add_cell(Cell & cell)
 		}
 	}
 
-	throw std::runtime_error("Too many cells in set");
+	throw std::runtime_error("Too many cells in set_digit");
 }
 
 const Cell & CellRefSet::get_cell(const int index) const

@@ -16,7 +16,7 @@ TEST(CellClassTest, Set)
 	Cell c;
 	EXPECT_FALSE(c.is_solved());
 	EXPECT_TRUE(c.has_candidate(0));
-	c.set(4);
+	c.set_digit(4);
 	EXPECT_TRUE(c.is_solved());
 	EXPECT_FALSE(c.has_candidate(0));
 }
@@ -39,20 +39,20 @@ TEST(CellClassTest, ClearCandidates)
 
 	c.clear_candidate(7);
 	EXPECT_TRUE(c.is_solved());
-	EXPECT_EQ(c.get(), 8);
+	EXPECT_EQ(c.get_digit(), 8);
 }
 
 TEST(CellClassTest, ErrorChecks01)
 {
 	Cell c;
 
-	EXPECT_THROW(c.get(), std::runtime_error);
+	EXPECT_THROW(c.get_digit(), std::runtime_error);
 
 	EXPECT_THROW(c.has_candidate(-1), std::runtime_error);
 	EXPECT_THROW(c.has_candidate(NUM_DIGITS), std::runtime_error);
 
-	EXPECT_THROW(c.set(-1), std::runtime_error);
-	EXPECT_THROW(c.set(10), std::runtime_error);
+	EXPECT_THROW(c.set_digit(-1), std::runtime_error);
+	EXPECT_THROW(c.set_digit(10), std::runtime_error);
 }
 
 TEST(CellClassTest, ToString01)
@@ -106,14 +106,14 @@ TEST(CellClassTest, ToString02)
 	EXPECT_EQ(gens.size(), EXP_CELL_STR_LEN);
 	EXPECT_EQ(gens, exps);
 
-	c.set(0);
+	c.set_digit(0);
 	exps = "    [1]    ";
 	gens = c.to_string();
 	EXPECT_EQ(exps.size(), EXP_CELL_STR_LEN);
 	EXPECT_EQ(gens.size(), EXP_CELL_STR_LEN);
 	EXPECT_EQ(gens, exps);
 
-	c.set(5);
+	c.set_digit(5);
 	exps = "    [6]    ";
 	gens = c.to_string();
 	EXPECT_EQ(exps.size(), EXP_CELL_STR_LEN);

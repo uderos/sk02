@@ -83,7 +83,7 @@ TEST(BoardTest, IsSolved)
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 		{
 			EXPECT_FALSE(b.is_solved());
-			b(rx, cx).set(1);
+			b(rx, cx).set_digit(1);
 		}
 	}
 

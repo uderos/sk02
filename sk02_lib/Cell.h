@@ -11,9 +11,9 @@ public:
 	Cell();
 	virtual ~Cell();
 
-	bool set(const int digit);
+	bool set_digit(const int digit);
 
-	int get() const;
+	int get_digit() const;
 
 	bool is_solved() const;
 

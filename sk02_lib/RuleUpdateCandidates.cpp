@@ -44,7 +44,7 @@ void RuleUpdateCandidates::update_single_set(Board & board, CellRefSet & cell_se
 
 					if (!target_cell.is_solved())
 					{
-						const bool cell_updated = target_cell.clear_candidate(source_cell.get());
+						const bool cell_updated = target_cell.clear_candidate(source_cell.get_digit());
 						if (cell_updated)
 							board.cell_updated_notify(target_cell);
 

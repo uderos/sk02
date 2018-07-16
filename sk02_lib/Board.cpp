@@ -49,7 +49,7 @@ CellRefSet & Board::get_set(const int idx)
 	if ((idx < 0) || (idx >= (BOARD_SIZE * NUM_CELL_SET_TYPES)))
 	{
 		std::ostringstream oss;
-		oss << "Invalid set index=" << idx
+		oss << "Invalid set_digit index=" << idx
 			<< " at " << __FILE__ << ':' << __LINE__;
 		throw std::runtime_error(oss.str());
 	}

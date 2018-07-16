@@ -31,7 +31,7 @@ static void f_test_rule(
 		std::cout << "BEFORE:\n" << board.to_string() << std::endl;
 
 	const int target_grp = (target_col / 3) + (3 * (target_row / 3));
-	board(target_row, target_col).set(target_digit);
+	board(target_row, target_col).set_digit(target_digit);
 
 	RuleUpdateCandidates rule;
 	rule.execute(board);
@@ -74,7 +74,7 @@ TEST(RuleUpdateCandidatesTest, test01)
 	const int ROW = 1; // 2nd row
 	const int COL = 2; // 3rd column
 	const int GRP = 0; // 1st group
-	board(ROW, COL).set(DIGIT);
+	board(ROW, COL).set_digit(DIGIT);
 
 	RuleUpdateCandidates rule;
 	rule.execute(board);

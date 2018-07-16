@@ -41,7 +41,7 @@ TEST(BoardGeneratorTest, FromString01)
 			{
 				EXPECT_TRUE(b(rx, cx).is_solved());
 				const int expected_value = int(text[rx][cx] - '0') - 1;
-				const int actual_value = b(rx, cx).get();
+				const int actual_value = b(rx, cx).get_digit();
 				EXPECT_EQ(actual_value, expected_value);
 			}
 		}

@@ -95,6 +95,6 @@ void BoardGenerator::parse_single_row(
 	{
 		const char c = text_line[cx];
 		if (is_digit(c))
-			board(row_index, cx).set(char_to_int(c) - 1);
+			board(row_index, cx).set_digit(char_to_int(c) - 1);
 	}
 }

@@ -13,7 +13,7 @@ Cell::~Cell()
 {
 }
 
-bool Cell::set(const int digit)
+bool Cell::set_digit(const int digit)
 {
 	validate_digit(digit, __FILE__, __LINE__);
 
@@ -24,7 +24,7 @@ bool Cell::set(const int digit)
 	return cell_updated;
 }
 
-int Cell::get() const
+int Cell::get_digit() const
 {
 	if (! is_solved())
 		throw std::runtime_error("Digit not available");
@@ -56,7 +56,7 @@ bool Cell::clear_candidate(const int digit)
 			{
 				if (candidates_.test(d))
 				{
-					set(d);
+					set_digit(d);
 					break;
 				}
 			}
