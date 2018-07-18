@@ -48,6 +48,12 @@
     <ClInclude Include="RuleCandidateTuples.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ISolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RuleCandidateTuples.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

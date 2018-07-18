@@ -27,7 +27,7 @@ public:
 	const CellRefSet & get_set(const int idx) const;
 	const CellRefSet & get_set(const eCellSetType type, const int idx) const;
 
-	CellRefSet * get_next_dirty_set();
+	const CellRefSet * get_next_dirty_set() const;
 
 	bool is_solved() const;
 
@@ -47,7 +47,9 @@ private:
 
 	std::array<std::array<std::unique_ptr<CellRefSet>, BOARD_SIZE>, NUM_CELL_SET_TYPES> sets_;
 
-	std::unordered_set<CellRefSet *> dirty_sets_;
+
+	std::unordered_set<int> dirty_sets_;
+//	std::set<int> dirty_sets_;
 
 	Cell & get_cell(const int rx, const int cx);
 	const Cell & get_cell(const int rx, const int cx) const;
@@ -63,6 +65,8 @@ private:
 	void process_updated_cell(const int rx, const int cx);
 
 	int calc_group_index(const int rx, const int cx) const;
+
+	void add_dirty_set(const eCellSetType type, const int idx);
 
 };
 

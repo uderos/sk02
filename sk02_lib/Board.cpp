@@ -5,13 +5,21 @@
 Board::Board()
 {
 	create_sets();
+
+	for (int tx = 0; tx < eCellSetType::NUM_CELL_SET_TYPES; ++tx)
+		for (int idx = 0; idx < BOARD_SIZE; ++idx)
+			add_dirty_set(eCellSetType(tx), idx);
 }
 
 Board::Board(const Board & rv) :
 	cell_list_(rv.cell_list_)
 {
-	create_sets();
-	dirty_sets_.clear();
+	for (int tx = 0; tx < eCellSetType::NUM_CELL_SET_TYPES; ++tx)
+		for (int idx = 0; idx < BOARD_SIZE; ++idx)
+			sets_[tx][idx] = std::make_unique<CellRefSet>(*rv.sets_[tx][idx]);
+
+	for (const auto & raw_idx : rv.dirty_sets_)
+		dirty_sets_.insert(raw_idx);
 }
 
 //Board::Board(Board && rv) :
@@ -186,14 +194,16 @@ std::string Board::to_string() const
 //	dirty_sets_.insert(sets_[eCellSetType::CS_ROW][rx].get());
 //}
 
-CellRefSet * Board::get_next_dirty_set()
+const CellRefSet * Board::get_next_dirty_set() const
 {
-	CellRefSet * set_ptr = nullptr;
+	const CellRefSet * set_ptr = nullptr;
 
 	if (!dirty_sets_.empty())
 	{
-		set_ptr = *(dirty_sets_.begin());
-		dirty_sets_.erase(set_ptr);
+		const int raw_idx = *(dirty_sets_.begin());
+		const int tx = (raw_idx >> 16);
+		const int idx = (raw_idx & 0xFFFF);
+		set_ptr = sets_[tx][idx].get();
 	}
 
 	return set_ptr;
@@ -244,20 +254,15 @@ int Board::calc_group_index(const int rx, const int cx) const
 
 void Board::process_updated_cell(const int rx, const int cx)
 {
-	{
-		const auto & row_set {sets_[eCellSetType::CS_ROW][rx]};
-		dirty_sets_.insert(row_set.get());
-	}
+	add_dirty_set(eCellSetType::CS_ROW, rx);
+	add_dirty_set(eCellSetType::CS_COLUMN, cx);
 
-	{
-		const auto & col_set {sets_[eCellSetType::CS_COLUMN][cx]};
-		dirty_sets_.insert(col_set.get());
-	}
+	const int gx = calc_group_index(rx, cx);
+	add_dirty_set(eCellSetType::CS_GROUP, gx);
+}
 
-	{
-		const int gx = calc_group_index(rx, cx);
-		const auto & grp_set {sets_[eCellSetType::CS_GROUP][gx]};
-		dirty_sets_.insert(grp_set.get());
-	}
+void Board::add_dirty_set(const eCellSetType type, const int idx)
+{
+	dirty_sets_.insert((type << 16) + (idx & 0xFFFF));
 }
 
