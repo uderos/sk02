@@ -27,7 +27,7 @@ public:
 	const CellRefSet & get_set(const int idx) const;
 	const CellRefSet & get_set(const eCellSetType type, const int idx) const;
 
-	const CellRefSet * get_next_dirty_set() const;
+	const CellRefSet * get_next_dirty_set();
 
 	bool is_solved() const;
 

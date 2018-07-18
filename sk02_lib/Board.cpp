@@ -194,7 +194,7 @@ std::string Board::to_string() const
 //	dirty_sets_.insert(sets_[eCellSetType::CS_ROW][rx].get());
 //}
 
-const CellRefSet * Board::get_next_dirty_set() const
+const CellRefSet * Board::get_next_dirty_set()
 {
 	const CellRefSet * set_ptr = nullptr;
 
@@ -204,6 +204,7 @@ const CellRefSet * Board::get_next_dirty_set() const
 		const int tx = (raw_idx >> 16);
 		const int idx = (raw_idx & 0xFFFF);
 		set_ptr = sets_[tx][idx].get();
+		dirty_sets_.erase(dirty_sets_.begin());
 	}
 
 	return set_ptr;

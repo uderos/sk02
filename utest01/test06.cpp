@@ -6,15 +6,15 @@
 static std::unique_ptr<Board> f_create_board_00()
 {
 	const std::vector<std::string> text{
-		".........",
-		"1........",
-		".........",
-		".........",
-		".........",
-		".........",
-		".........",
-		".......9.",
-		"........."
+		".4.96.7..",
+		"......1.4",
+		".87.43...",
+		"6....13..",
+		".79...84.",
+		"..18....5",
+		"...67.91.",
+		"9.3......",
+		"..4.89.5."
 	};
 
 	BoardGenerator bg;
@@ -25,9 +25,13 @@ TEST(SimpleSolverTest, test01)
 {
 	auto board_ptr = f_create_board_00();
 
+	std::cout << "BEFORE:\n" << board_ptr->to_string() << std::endl;
+
 	SimpleSolver solver;
 	
 	const bool result = solver.solve(*board_ptr);
+
+	std::cout << "AFTER:\n" << board_ptr->to_string() << std::endl;
 
 	EXPECT_TRUE(result);
 }
