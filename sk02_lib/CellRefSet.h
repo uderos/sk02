@@ -10,30 +10,30 @@ public:
 
 	enum { NUM_CELLS = BOARD_SIZE };
 
-	CellRefSet(const eCellSetType type, const int index);
+	CellRefSet(const eCellSetType type);
 	virtual ~CellRefSet();
 
 	eCellSetType get_type() const;
 
-	void add_cell(Cell & cell);
+	void add_cell(const int rx, const int cx);
 
-	const Cell & get_cell(const int index) const;
-	Cell & get_cell(const int index);
-
-	void set_dirty_flag();
-	void clear_dirty_flag();
-	bool get_dirty_flag() const;
+	cell_coords_t get_cell(const int index) const;
 
 private:
 
-	using cell_ptr_t = std::array<Cell *, NUM_CELLS>;
+	enum { NULL_COORDINATE = (-1) };
+
+	struct cell_data_t
+	{
+		int row_idx;
+		int col_idx;
+		cell_data_t() : row_idx(NULL_COORDINATE), col_idx(NULL_COORDINATE) {};
+		cell_data_t(const int rx, const int cx) : row_idx(rx), col_idx(cx) {};
+	};
+
+	std::vector<cell_data_t> cell_list_;
 
 	const eCellSetType type_;
-	const int index_;
-
-	cell_ptr_t cell_ptr_list_;
-
-	bool dirty_flag_;
 
 	void validate_cell_index(const int index) const;
 };

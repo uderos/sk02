@@ -7,11 +7,11 @@ public:
 	virtual ~RuleUpdateCandidates();
 
 	virtual void execute(Board & board) const override;
-	virtual void execute(Board & board, CellRefSet & cell_set) const override;
+	virtual void execute(Board & board, const CellRefSet & cell_set) const override;
 
 private:
 
-	void update_single_set(Board & board, CellRefSet & cell_set) const;
+	void update_single_set(Board & board, const CellRefSet & cell_set) const;
 
 };
 

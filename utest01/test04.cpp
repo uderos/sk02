@@ -31,7 +31,11 @@ static void f_test_rule(
 		std::cout << "BEFORE:\n" << board.to_string() << std::endl;
 
 	const int target_grp = (target_col / 3) + (3 * (target_row / 3));
-	board(target_row, target_col).set_digit(target_digit);
+
+	{
+		const auto row_set = board.get_set(eCellSetType::CS_ROW, target_row);
+		board.set_cell_digit(row_set.get_cell(target_col), target_digit);
+	}
 
 	RuleUpdateCandidates rule;
 	rule.execute(board);
@@ -68,13 +72,17 @@ TEST(RuleUpdateCandidatesTest, test01)
 
 	Board board;
 
-	std::cout << "BEFORE:\n" << board.to_string() << std::endl;
-
 	const int DIGIT = 2;
 	const int ROW = 1; // 2nd row
 	const int COL = 2; // 3rd column
 	const int GRP = 0; // 1st group
-	board(ROW, COL).set_digit(DIGIT);
+
+	{
+		const auto & row_set(board.get_set(eCellSetType::CS_ROW, ROW));
+		board.set_cell_digit(row_set.get_cell(COL), DIGIT);
+	}
+
+	std::cout << "BEFORE:\n" << board.to_string() << std::endl;
 
 	RuleUpdateCandidates rule;
 	rule.execute(board);

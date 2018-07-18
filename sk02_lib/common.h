@@ -15,3 +15,12 @@ enum eCellSetType
 	NUM_CELL_SET_TYPES
 };
 
+struct cell_coords_t
+{
+	int rx;
+	int cx;
+	cell_coords_t(const int rx_in, const int cx_in) : rx(rx_in), cx(cx_in) {};
+};
+
+
+

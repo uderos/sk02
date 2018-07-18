@@ -91,10 +91,12 @@ void BoardGenerator::parse_single_row(
 	const int row_index,
 	const std::string & text_line) const
 {
+	const auto & row_set = board.get_set(eCellSetType::CS_ROW, row_index);
+
 	for (std::size_t cx = 0; cx < text_line.size(); ++cx)
 	{
 		const char c = text_line[cx];
 		if (is_digit(c))
-			board(row_index, cx).set_digit(char_to_int(c) - 1);
+			board.set_cell_digit(row_set.get_cell(cx), char_to_int(c) - 1);
 	}
 }
