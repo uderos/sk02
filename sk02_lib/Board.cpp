@@ -2,30 +2,41 @@
 #include "Board.h"
 
 
-Board::Board() :
-	cells_ptr_(std::make_unique<cells_t>())
+Board::Board()
 {
 	create_sets();
 }
 
 Board::Board(const Board & rv) :
-	cells_ptr_(std::make_unique<cells_t>(*rv.cells_ptr_))
+	cell_list_(rv.cell_list_)
 {
 	create_sets();
+	dirty_sets_.clear();
 }
 
-Board::Board(Board && rv) :
-	cells_ptr_(std::move(rv.cells_ptr_))
-{
-}
+//Board::Board(Board && rv) :
+//	cells_ptr_(std::move(rv.cells_ptr_))
+//{
+//}
 
 Board::~Board()
 {
 }
 
-Cell & Board::operator()(const int rx, const int cx)
+const Cell & Board::operator()(const int rx, const int cx) const
 {
 	return get_cell(rx, cx);
+}
+
+const Cell & Board::operator()(const CellRefSet & cell_set, const int idx) const
+{
+	const cell_coords_t cell_coords = cell_set.get_cell(idx);
+	return get_cell(cell_coords.rx, cell_coords.cx);
+}
+
+const Cell & Board::operator()(const cell_coords_t & cell_coords) const
+{
+	return get_cell(cell_coords.rx, cell_coords.cx);
 }
 
 Cell & Board::get_cell(const int rx, const int cx)
@@ -33,7 +44,7 @@ Cell & Board::get_cell(const int rx, const int cx)
 	validate_indexes(rx, cx, __FILE__, __LINE__);
 
 	const int idx = (rx * BOARD_SIZE) + cx;
-	return (*cells_ptr_)[idx];
+	return cell_list_[idx];
 }
 
 const Cell & Board::get_cell(const int rx, const int cx) const
@@ -41,10 +52,10 @@ const Cell & Board::get_cell(const int rx, const int cx) const
 	validate_indexes(rx, cx, __FILE__, __LINE__);
 
 	const int idx = (rx * BOARD_SIZE) + cx;
-	return (*cells_ptr_)[idx];
+	return cell_list_[idx];
 }
 
-CellRefSet & Board::get_set(const int idx)
+const CellRefSet & Board::get_set(const int idx) const
 {
 	if ((idx < 0) || (idx >= (BOARD_SIZE * NUM_CELL_SET_TYPES)))
 	{
@@ -60,15 +71,15 @@ CellRefSet & Board::get_set(const int idx)
 	return *(sets_[type_idx][set_idx]);
 }
 
-CellRefSet & Board::get_set(const eCellSetType type, const int idx)
+const CellRefSet & Board::get_set(const eCellSetType type, const int idx) const
 {
 	return *(sets_[type][idx]);
 }
 
 bool Board::is_solved() const
 {
-	for (std::size_t idx = 0; idx < cells_ptr_->size(); ++idx)
-			if (!(*cells_ptr_)[idx].is_solved())
+	for (std::size_t idx = 0; idx < cell_list_.size(); ++idx)
+			if (!cell_list_[idx].is_solved())
 				return false;
 	return true;
 }
@@ -101,10 +112,10 @@ void Board::create_sets()
 	// Create rows
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
 	{
-		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_ROW, rx);
+		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_ROW);
 
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
-			new_set_ptr->add_cell(get_cell(rx, cx));
+			new_set_ptr->add_cell(rx, cx);
 
 		sets_[eCellSetType::CS_ROW][rx] = std::move(new_set_ptr);
 	}
@@ -112,10 +123,10 @@ void Board::create_sets()
 	// Create columns
 	for (int cx = 0; cx < BOARD_SIZE; ++cx)
 	{
-		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_COLUMN, cx);
+		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_COLUMN);
 
 		for (int rx = 0; rx < BOARD_SIZE; ++rx)
-			new_set_ptr->add_cell(get_cell(rx, cx));
+			new_set_ptr->add_cell(rx, cx);
 
 		sets_[eCellSetType::CS_COLUMN][cx] = std::move(new_set_ptr);
 	}
@@ -127,11 +138,11 @@ void Board::create_sets()
 	{
 		for (int cx = 0; cx < BOARD_SIZE; cx += step)
 		{
-			auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_GROUP, cx);
+			auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_GROUP);
 
 			for (int rj = 0; rj < step; ++rj)
 				for (int cj = 0; cj < step; ++cj)
-					new_set_ptr->add_cell(get_cell(rx + rj, cx + cj));
+					new_set_ptr->add_cell(rx + rj, cx + cj);
 
 			sets_[eCellSetType::CS_GROUP][group_idx++] = std::move(new_set_ptr);
 		}
@@ -160,32 +171,93 @@ std::string Board::to_string() const
 	return oss.str();
 }
 
-void Board::cell_updated_notify(Cell & cell)
-{
-	const Cell * cell_ptr(&cell);
-	const Cell * first_cell_ptr = &((*cells_ptr_)[0]);
-	const std::ptrdiff_t ptr_diff = (cell_ptr - first_cell_ptr);
-	const unsigned int ptr_diff_uint = static_cast<unsigned int>(ptr_diff);
-	const auto idx = ptr_diff_uint / sizeof(&cell);
-
-	const int rx = idx / BOARD_SIZE;
-	const int cx = idx % BOARD_SIZE;
-	const int grx = (cx / GROUP_SIZE) + (BOARD_SIZE * (rx / BOARD_SIZE));
-
-	dirty_sets.insert(sets_[eCellSetType::CS_ROW][rx].get());
-}
+//void Board::cell_updated_notify(Cell & cell)
+//{
+//	const Cell * cell_ptr(&cell);
+//	const Cell * first_cell_ptr = &((*cells_ptr_)[0]);
+//	const std::ptrdiff_t ptr_diff = (cell_ptr - first_cell_ptr);
+//	const unsigned int ptr_diff_uint = static_cast<unsigned int>(ptr_diff);
+//	const auto idx = ptr_diff_uint / sizeof(&cell);
+//
+//	const int rx = idx / BOARD_SIZE;
+//	const int cx = idx % BOARD_SIZE;
+//	const int grx = (cx / GROUP_SIZE) + (BOARD_SIZE * (rx / BOARD_SIZE));
+//
+//	dirty_sets_.insert(sets_[eCellSetType::CS_ROW][rx].get());
+//}
 
 CellRefSet * Board::get_next_dirty_set()
 {
 	CellRefSet * set_ptr = nullptr;
 
-	if (!dirty_sets.empty())
+	if (!dirty_sets_.empty())
 	{
-		set_ptr = *(dirty_sets.begin());
-		dirty_sets.erase(set_ptr);
+		set_ptr = *(dirty_sets_.begin());
+		dirty_sets_.erase(set_ptr);
 	}
 
 	return set_ptr;
 }
 
+void Board::clear_cell_candidate(
+	const cell_coords_t & cell_coords,
+	const int digit)
+{
+	Cell & cell = get_cell(cell_coords.rx, cell_coords.cx);
+
+	const bool cell_updated = cell.clear_candidate(digit);
+
+	if (cell_updated)
+		process_updated_cell(cell_coords.rx, cell_coords.cx);
+}
+
+void Board::clear_cell_candidate(
+	const cell_coords_t & cell_coords,
+	const Cell::cell_candidates_t & target_candidates)
+{
+	Cell & cell = get_cell(cell_coords.rx, cell_coords.cx);
+
+	const bool cell_updated = cell.clear_candidate(target_candidates);
+
+	if (cell_updated)
+		process_updated_cell(cell_coords.rx, cell_coords.cx);
+}
+
+void Board::set_cell_digit(
+	const cell_coords_t & cell_coords,
+	const int digit)
+{
+	Cell & cell = get_cell(cell_coords.rx, cell_coords.cx);
+
+	const bool cell_updated = cell.set_digit(digit);
+
+	if (cell_updated)
+		process_updated_cell(cell_coords.rx, cell_coords.cx);
+}
+
+int Board::calc_group_index(const int rx, const int cx) const
+{
+	validate_indexes(rx, cx, __FILE__, __LINE__);
+	const int gx = (cx % GROUP_SIZE) + (GROUP_SIZE * (rx / GROUP_SIZE));
+	return gx;
+}
+
+void Board::process_updated_cell(const int rx, const int cx)
+{
+	{
+		const auto & row_set {sets_[eCellSetType::CS_ROW][rx]};
+		dirty_sets_.insert(row_set.get());
+	}
+
+	{
+		const auto & col_set {sets_[eCellSetType::CS_COLUMN][cx]};
+		dirty_sets_.insert(col_set.get());
+	}
+
+	{
+		const int gx = calc_group_index(rx, cx);
+		const auto & grp_set {sets_[eCellSetType::CS_GROUP][gx]};
+		dirty_sets_.insert(grp_set.get());
+	}
+}
 

@@ -13,11 +13,14 @@ TEST(RuleCandidatesTuplesTest, test01)
 
 	const int COL1 = 0;
 	const int COL2 = 1;
+
+	auto & row_set = board.get_set(eCellSetType::CS_ROW, ROW);
+
 	for (int d = 0; d < NUM_DIGITS; ++d)
 		if ((d != DIGIT1) && (d != DIGIT2))
 		{
-			board(ROW, COL1).clear_candidate(d);
-			board(ROW, COL2).clear_candidate(d);
+			board.clear_cell_candidate(row_set.get_cell(COL1), d);
+			board.clear_cell_candidate(row_set.get_cell(COL2), d);
 		}
 
 	std::cout << "BEFORE:\n" << board.to_string() << std::endl;
@@ -74,12 +77,15 @@ TEST(RuleCandidatesTuplesTest, test02)
 	const int COL1 = 1;
 	const int COL2 = 4;
 	const int COL3 = 7;
+
+	auto & row_set = board.get_set(eCellSetType::CS_ROW, ROW);
+
 	for (int d = 0; d < NUM_DIGITS; ++d)
 		if ((d != DIGIT1) && (d != DIGIT2) && (d != DIGIT3))
 		{
-			board(ROW, COL1).clear_candidate(d);
-			board(ROW, COL2).clear_candidate(d);
-			board(ROW, COL3).clear_candidate(d);
+			board.clear_cell_candidate(row_set.get_cell(COL1), d);
+			board.clear_cell_candidate(row_set.get_cell(COL2), d);
+			board.clear_cell_candidate(row_set.get_cell(COL3), d);
 		}
 
 	std::cout << "BEFORE:\n" << board.to_string() << std::endl;

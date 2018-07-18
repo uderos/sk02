@@ -12,22 +12,25 @@ static void f_test_board_sets(Board & b)
 	// test rows
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
 	{
-		CellRefSet & row = b.get_set(eCellSetType::CS_ROW, rx);
+		const CellRefSet & row_set = b.get_set(eCellSetType::CS_ROW, rx);
+
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 		{
-			Cell * cell_ptr = (&row.get_cell(cx));
-			EXPECT_EQ(cell_ptr, &b(rx, cx));
+			const cell_coords_t cell_coords = row_set.get_cell(cx);
+			EXPECT_EQ(cell_coords.rx, rx);
+			EXPECT_EQ(cell_coords.cx, cx);
 		}
 	}
 
 	// test columns
 	for (int cx = 0; cx < BOARD_SIZE; ++cx)
 	{
-		CellRefSet & column = b.get_set(eCellSetType::CS_COLUMN, cx);
+		const CellRefSet & column_set = b.get_set(eCellSetType::CS_COLUMN, cx);
 		for (int rx = 0; rx < BOARD_SIZE; ++rx)
 		{
-			Cell * cell_ptr = (&column.get_cell(rx));
-			EXPECT_EQ(cell_ptr, &b(rx, cx));
+			const cell_coords_t cell_coords = column_set.get_cell(rx);
+			EXPECT_EQ(cell_coords.rx, rx);
+			EXPECT_EQ(cell_coords.cx, cx);
 		}
 	}
 
@@ -35,21 +38,21 @@ static void f_test_board_sets(Board & b)
 	const int step = BOARD_SIZE / GROUP_SIZE;
 	for (int gx = 0; gx < BOARD_SIZE; ++gx)
 	{
-		CellRefSet & group = b.get_set(eCellSetType::CS_GROUP, gx);
+		const CellRefSet & group_set = b.get_set(eCellSetType::CS_GROUP, gx);
 
 		int cell_idx = 0;
 		for (int rj = 0; rj < step; ++rj)
 		{
 			for (int cj = 0; cj < step; ++cj)
 			{
-				Cell * group_cell_ptr = (&group.get_cell(cell_idx++));
-
 				const int rx = (3 * (gx / 3)) + rj;
 				const int cx = (3 * (gx % 3)) + cj;
 				// std::cout << "gx=" << gx << " rx=" << rx << " cx=" << cx << std::endl;
 
-				Cell * board_cell_ptr = &b(rx, cx);
-				EXPECT_EQ(group_cell_ptr, board_cell_ptr);
+				const cell_coords_t cell_coords = group_set.get_cell(cell_idx++);
+				EXPECT_EQ(cell_coords.rx, rx);
+				EXPECT_EQ(cell_coords.cx, cx);
+
 			}
 		}
 	}
@@ -83,7 +86,7 @@ TEST(BoardTest, IsSolved)
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 		{
 			EXPECT_FALSE(b.is_solved());
-			b(rx, cx).set_digit(1);
+			b.set_cell_digit(cell_coords_t(rx, cx), 1);
 		}
 	}
 

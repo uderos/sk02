@@ -123,11 +123,15 @@ TEST(CellClassTest, ToString02)
 
 TEST(CellRefSetTest, Constructor)
 {
-	Cell c;
-	CellRefSet row(eCellSetType::CS_ROW, 0);
+	const int ROW = 1;
+	const int COLUMN = 2;
+	CellRefSet row_set(eCellSetType::CS_ROW);
 
-	row.add_cell(c);
-	Cell & cell_ref = row.get_cell(0);
-	EXPECT_EQ(&c, &cell_ref);
-	EXPECT_THROW(row.get_cell(1), std::runtime_error);
+	row_set.add_cell(ROW, COLUMN);
+
+	const cell_coords_t cell_coords{ row_set.get_cell(0) };
+
+	EXPECT_EQ(cell_coords.rx, ROW);
+	EXPECT_EQ(cell_coords.cx, COLUMN);
+	EXPECT_THROW(row_set.get_cell(1), std::runtime_error);
 }
