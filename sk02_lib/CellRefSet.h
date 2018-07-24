@@ -10,7 +10,7 @@ public:
 
 	enum { NUM_CELLS = BOARD_SIZE };
 
-	CellRefSet(const eCellSetType type);
+	CellRefSet(const eCellSetType type, const int set_idx);
 	virtual ~CellRefSet();
 
 	eCellSetType get_type() const;
@@ -18,6 +18,10 @@ public:
 	void add_cell(const int rx, const int cx);
 
 	cell_coords_t get_cell(const int index) const;
+
+	std::string to_string() const;
+
+	static std::string to_string(const eCellSetType type, const int set_idx);
 
 private:
 
@@ -34,6 +38,8 @@ private:
 	std::vector<cell_data_t> cell_list_;
 
 	const eCellSetType type_;
+
+	const int set_index_;
 
 	void validate_cell_index(const int index) const;
 };

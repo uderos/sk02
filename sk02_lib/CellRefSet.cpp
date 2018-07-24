@@ -3,7 +3,9 @@
 #include "CellRefSet.h"
 
 
-CellRefSet::CellRefSet(const eCellSetType type) : type_(type)
+CellRefSet::CellRefSet(const eCellSetType type, const int set_idx) : 
+	type_(type),
+	set_index_(set_idx)
 {
 }
 
@@ -40,6 +42,7 @@ void CellRefSet::validate_cell_index(const int index) const
 	{
 		std::ostringstream oss;
 		oss << "Invalid cell index=" << index
+			<< " set " << to_string()
 			<< " at " << __FILE__ << ':' << __LINE__;
 		throw std::runtime_error(oss.str());
 	}
@@ -51,9 +54,31 @@ void CellRefSet::validate_cell_index(const int index) const
 		oss << "Invalid cell coords at index=" << index
 			<< " rx=" << cell_list_[index].row_idx
 			<< " cx=" << cell_list_[index].col_idx
+			<< " set " << to_string()
 			<< " at " << __FILE__ << ':' << __LINE__;
 		throw std::runtime_error(oss.str());
 	}
+}
+
+std::string CellRefSet::to_string() const
+{
+	return to_string(type_, set_index_);
+}
+
+std::string CellRefSet::to_string(const eCellSetType type, const int set_idx)
+{
+	std::ostringstream oss;
+	switch (type)
+	{
+	case eCellSetType::CS_ROW:		oss << 'R';	break;
+	case eCellSetType::CS_COLUMN:	oss << 'C';	break;
+	case eCellSetType::CS_GROUP:	oss << 'G';	break;
+	default: oss << '?' << type << '?';			break;
+	}
+
+	oss << set_idx;
+
+	return oss.str();
 }
 
 

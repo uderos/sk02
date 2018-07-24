@@ -125,7 +125,7 @@ TEST(CellRefSetTest, Constructor)
 {
 	const int ROW = 1;
 	const int COLUMN = 2;
-	CellRefSet row_set(eCellSetType::CS_ROW);
+	CellRefSet row_set(eCellSetType::CS_ROW, 0);
 
 	row_set.add_cell(ROW, COLUMN);
 

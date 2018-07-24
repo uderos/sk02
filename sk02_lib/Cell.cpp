@@ -39,14 +39,16 @@ bool Cell::is_solved() const
 
 bool Cell::clear_candidate(const int digit)
 {
+	bool cell_updated = false;
+
 	validate_digit(digit, __FILE__, __LINE__);
-
-	const bool cell_updated = candidates_.test(digit);
-
-	candidates_.reset(digit);
 
 	if (!is_solved())
 	{
+		cell_updated = candidates_.test(digit);
+
+		candidates_.reset(digit);
+
 		if (!candidates_.any())
 			throw std::runtime_error("No candidates left");
 

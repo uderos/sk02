@@ -31,7 +31,9 @@ TEST(SimpleSolverTest, test01)
 	
 	const bool result = solver.solve(*board_ptr);
 
-	std::cout << "AFTER:\n" << board_ptr->to_string() << std::endl;
+	std::cout << "AFTER:\n" << board_ptr->to_string() 
+		<< " result=" << result
+		<< std::endl;
 
 	EXPECT_TRUE(result);
 }

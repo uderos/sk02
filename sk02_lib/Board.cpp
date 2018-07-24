@@ -120,7 +120,7 @@ void Board::create_sets()
 	// Create rows
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
 	{
-		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_ROW);
+		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_ROW, rx);
 
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 			new_set_ptr->add_cell(rx, cx);
@@ -131,7 +131,7 @@ void Board::create_sets()
 	// Create columns
 	for (int cx = 0; cx < BOARD_SIZE; ++cx)
 	{
-		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_COLUMN);
+		auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_COLUMN, cx);
 
 		for (int rx = 0; rx < BOARD_SIZE; ++rx)
 			new_set_ptr->add_cell(rx, cx);
@@ -146,7 +146,7 @@ void Board::create_sets()
 	{
 		for (int cx = 0; cx < BOARD_SIZE; cx += step)
 		{
-			auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_GROUP);
+			auto new_set_ptr = std::make_unique<CellRefSet>(eCellSetType::CS_GROUP, group_idx);
 
 			for (int rj = 0; rj < step; ++rj)
 				for (int cj = 0; cj < step; ++cj)
@@ -205,6 +205,9 @@ const CellRefSet * Board::get_next_dirty_set()
 		const int idx = (raw_idx & 0xFFFF);
 		set_ptr = sets_[tx][idx].get();
 		dirty_sets_.erase(dirty_sets_.begin());
+		std::cout << "Processing dirty set: " << set_ptr->to_string()
+			<< " n=" << dirty_sets_.size()
+			<< std::endl; // UBEDEBUG
 	}
 
 	return set_ptr;
@@ -219,6 +222,14 @@ void Board::clear_cell_candidate(
 	const bool cell_updated = cell.clear_candidate(digit);
 
 	if (cell_updated)
+		std::cout << "Clear cell candidate:"
+			<< " rx=" << cell_coords.rx
+			<< " cx=" << cell_coords.cx
+			<< " d=" << digit
+			<< " u=" << cell_updated
+			<< std::endl; // UBEDEBUG
+
+	if (cell_updated)
 		process_updated_cell(cell_coords.rx, cell_coords.cx);
 }
 
@@ -229,6 +240,14 @@ void Board::clear_cell_candidate(
 	Cell & cell = get_cell(cell_coords.rx, cell_coords.cx);
 
 	const bool cell_updated = cell.clear_candidate(target_candidates);
+
+	if (cell_updated)
+		std::cout << "Clear cell candidates:"
+			<< " rx=" << cell_coords.rx
+			<< " cx=" << cell_coords.cx
+			<< " c=" << target_candidates.to_string()
+			<< " u=" << cell_updated
+			<< std::endl; // UBEDEBUG
 
 	if (cell_updated)
 		process_updated_cell(cell_coords.rx, cell_coords.cx);
@@ -243,6 +262,14 @@ void Board::set_cell_digit(
 	const bool cell_updated = cell.set_digit(digit);
 
 	if (cell_updated)
+		std::cout << "Set cell digit:"
+			<< " rx=" << cell_coords.rx
+			<< " cx=" << cell_coords.cx
+			<< " d=" << digit
+			<< " u=" << cell_updated
+			<< std::endl; // UBEDEBUG
+
+	if (cell_updated)
 		process_updated_cell(cell_coords.rx, cell_coords.cx);
 }
 
@@ -255,6 +282,7 @@ int Board::calc_group_index(const int rx, const int cx) const
 
 void Board::process_updated_cell(const int rx, const int cx)
 {
+	std::cout << "Cell updated: rx=" << rx << " cx=" << cx << std::endl; // UBEDEBUG
 	add_dirty_set(eCellSetType::CS_ROW, rx);
 	add_dirty_set(eCellSetType::CS_COLUMN, cx);
 
@@ -264,6 +292,16 @@ void Board::process_updated_cell(const int rx, const int cx)
 
 void Board::add_dirty_set(const eCellSetType type, const int idx)
 {
-	dirty_sets_.insert((type << 16) + (idx & 0xFFFF));
+	const int key = (type << 16) + (idx & 0xFFFF);
+	
+	if (dirty_sets_.find(key) == dirty_sets_.end())
+		std::cout << "New dirty set: " << CellRefSet::to_string(type, idx)
+			<< " (t=" << type << " idx=" << idx << ')'
+			<< " n=" << dirty_sets_.size()
+			<< std::endl; // UBEDEBUG
+
+	dirty_sets_.insert(key);
+
+
 }
 
