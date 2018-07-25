@@ -283,6 +283,7 @@ int Board::calc_group_index(const int rx, const int cx) const
 void Board::process_updated_cell(const int rx, const int cx)
 {
 	std::cout << "Cell updated: rx=" << rx << " cx=" << cx << std::endl; // UBEDEBUG
+//	std::cout << "Updated Board:\n" << to_string() << std::endl;
 	add_dirty_set(eCellSetType::CS_ROW, rx);
 	add_dirty_set(eCellSetType::CS_COLUMN, cx);
 

@@ -3,7 +3,7 @@
 #include "../sk02_lib/SimpleSolver.h"
 
 
-static std::unique_ptr<Board> f_create_board_00()
+static std::unique_ptr<Board> f_create_board_01()
 {
 	const std::vector<std::string> text{
 		".4.96.7..",
@@ -21,9 +21,27 @@ static std::unique_ptr<Board> f_create_board_00()
 	return bg.generate(text);
 }
 
+static std::unique_ptr<Board> f_create_board_02()
+{
+	const std::vector<std::string> text{
+		"54.8..6.9",
+		"....6....",
+		"...9.7.28",
+		".31....8.",
+		".5.7.2.1.",
+		".9....53.",
+		"61.3.5...",
+		"....2....",
+		"9.7..1.45",
+	};
+
+	BoardGenerator bg;
+	return bg.generate(text);
+}
+
 TEST(SimpleSolverTest, test01)
 {
-	auto board_ptr = f_create_board_00();
+	auto board_ptr = f_create_board_01();
 
 	std::cout << "BEFORE:\n" << board_ptr->to_string() << std::endl;
 
@@ -32,6 +50,23 @@ TEST(SimpleSolverTest, test01)
 	const bool result = solver.solve(*board_ptr);
 
 	std::cout << "AFTER:\n" << board_ptr->to_string() 
+		<< " result=" << result
+		<< std::endl;
+
+	EXPECT_TRUE(result);
+}
+
+TEST(SimpleSolverTest, test02)
+{
+	auto board_ptr = f_create_board_02();
+
+	std::cout << "BEFORE:\n" << board_ptr->to_string() << std::endl;
+
+	SimpleSolver solver;
+
+	const bool result = solver.solve(*board_ptr);
+
+	std::cout << "AFTER:\n" << board_ptr->to_string()
 		<< " result=" << result
 		<< std::endl;
 
