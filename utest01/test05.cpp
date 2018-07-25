@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "sk02_lib.h"
-#include "../sk02_lib/RuleCandidateTuples.h"
+#include "lib_include.h"
 
 TEST(RuleCandidatesTuplesTest, test01)
 {

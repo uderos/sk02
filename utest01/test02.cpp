@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "sk02_lib.h"
+#include "lib_include.h"
 
 TEST(BoardTest, Constructor)
 {

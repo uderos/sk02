@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="BoardGenerator.h" />
     <ClInclude Include="Cell.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BoardGenerator.cpp" />
     <ClCompile Include="Cell.cpp" />

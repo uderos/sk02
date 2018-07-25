@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "sk02_lib.h"
+#include "lib_include.h"
 
 static constexpr std::size_t EXP_CELL_STR_LEN = 11;
 

@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "sk02_lib.h"
-#include "../sk02_lib/SimpleSolver.h"
+#include "lib_include.h"
 
 
 static std::unique_ptr<Board> f_create_board_01()
