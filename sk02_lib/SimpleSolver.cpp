@@ -17,7 +17,6 @@ SimpleSolver::~SimpleSolver()
 
 bool SimpleSolver::solve(Board & board)
 {
-	bool is_solved = false;
 	const CellRefSet * dirty_set_ptr = board.get_next_dirty_set();
 
 	while ((!board.is_solved()) && dirty_set_ptr)
