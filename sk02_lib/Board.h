@@ -38,6 +38,8 @@ public:
 	void set_cell_digit(const cell_coords_t & cell_coords,
 						const int digit);
 
+	bool is_valid() const;
+
 	std::string to_string() const;
 
 private:
@@ -68,5 +70,6 @@ private:
 
 	void add_dirty_set(const eCellSetType type, const int idx);
 
+	bool is_set_valid(const CellRefSet & cell_set) const;
 };
 

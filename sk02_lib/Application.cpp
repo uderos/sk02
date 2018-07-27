@@ -38,11 +38,7 @@ void Application::run_exec(const std::string & input_file_name)
 	auto board_ptr = board_generator.generate(input_file_name);
 
 	if (!board_ptr)
-	{
-		std::ostringstream oss;
-		oss << "Unable to load board from file: " << input_file_name;
-		throw std::runtime_error(oss.str());
-	}
+		throw std::runtime_error("Unable to create the board");
 
 	std::cout << "BEFORE:\n" << board_ptr->to_string() << std::endl;
 

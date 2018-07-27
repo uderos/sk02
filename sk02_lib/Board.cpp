@@ -160,15 +160,19 @@ void Board::create_sets()
 std::string Board::to_string() const
 {
 	const std::string frame(BOARD_SIZE, '=');
-	std::ostringstream oss;
+	const bool board_solved = is_solved();
 
+	std::ostringstream oss;
 	oss << frame << std::endl;
 
 	for (int rx = 0; rx < BOARD_SIZE; ++rx)
 	{
 		for (int cx = 0; cx < BOARD_SIZE; ++cx)
 		{
-			oss << get_cell(rx, cx).to_string();
+			if (board_solved)
+				oss << 1 + get_cell(rx, cx).get_digit();
+			else
+				oss << get_cell(rx, cx).to_string();
 		}
 		oss << std::endl;
 	}
@@ -178,21 +182,6 @@ std::string Board::to_string() const
 
 	return oss.str();
 }
-
-//void Board::cell_updated_notify(Cell & cell)
-//{
-//	const Cell * cell_ptr(&cell);
-//	const Cell * first_cell_ptr = &((*cells_ptr_)[0]);
-//	const std::ptrdiff_t ptr_diff = (cell_ptr - first_cell_ptr);
-//	const unsigned int ptr_diff_uint = static_cast<unsigned int>(ptr_diff);
-//	const auto idx = ptr_diff_uint / sizeof(&cell);
-//
-//	const int rx = idx / BOARD_SIZE;
-//	const int cx = idx % BOARD_SIZE;
-//	const int grx = (cx / GROUP_SIZE) + (BOARD_SIZE * (rx / BOARD_SIZE));
-//
-//	dirty_sets_.insert(sets_[eCellSetType::CS_ROW][rx].get());
-//}
 
 const CellRefSet * Board::get_next_dirty_set()
 {
@@ -304,5 +293,46 @@ void Board::add_dirty_set(const eCellSetType type, const int idx)
 	dirty_sets_.insert(key);
 
 
+}
+
+bool Board::is_valid() const
+{
+	for (int tx = 0; tx < eCellSetType::NUM_CELL_SET_TYPES; ++tx)
+	{
+		for (int idx = 0; idx < BOARD_SIZE; ++idx)
+		{
+			const bool valid_set = is_set_valid(get_set(eCellSetType(tx), idx));
+			if (! valid_set)
+				return false;
+		}
+	}
+
+	return true;
+}
+
+bool Board::is_set_valid(const CellRefSet & cell_set) const
+{
+	bool is_valid = true;
+
+	// No repeated digits
+	{
+		std::bitset<CellRefSet::NUM_CELLS> digits;
+		for (int i = 0; is_valid && i < CellRefSet::NUM_CELLS; ++i)
+		{
+			const cell_coords_t cell_coords(cell_set.get_cell(i));
+			const Cell & cell(get_cell(cell_coords.rx, cell_coords.cx));
+			if (cell.is_solved())
+			{
+				if (digits.test(cell.get_digit()))
+				{
+					is_valid = false;
+					std::cout << "Invalid cell set: " << cell_set.to_string() << std::endl;
+				}
+				digits.set(cell.get_digit());
+			}
+		}
+	}
+
+	return is_valid;
 }
 

@@ -47,3 +47,40 @@ TEST(BoardGeneratorTest, FromString01)
 		}
 	}
 }
+
+TEST(BoardTest, board_test_01)
+{
+	Board b;
+	EXPECT_FALSE(b.is_solved());
+	EXPECT_TRUE(b.is_valid());
+
+	Cell::cell_candidates_t candidates;
+	candidates.set();
+	candidates.reset(0);
+	b.clear_cell_candidate(cell_coords_t(0, 0), candidates);
+	EXPECT_TRUE(b.is_valid());
+
+	{
+		Board b1(b);
+		EXPECT_TRUE(b1.is_valid());
+		b1.clear_cell_candidate(cell_coords_t(0, 8), candidates);
+		EXPECT_FALSE(b1.is_valid());
+	}
+
+	{
+		Board b1(b);
+		EXPECT_TRUE(b1.is_valid());
+		b1.clear_cell_candidate(cell_coords_t(8, 0), candidates);
+		EXPECT_FALSE(b1.is_valid());
+	}
+
+	{
+		Board b1(b);
+		EXPECT_TRUE(b1.is_valid());
+		b.clear_cell_candidate(cell_coords_t(1, 1), candidates);
+		EXPECT_FALSE(b.is_valid());
+	}
+
+
+}
+
