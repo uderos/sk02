@@ -30,6 +30,15 @@ std::unique_ptr<Board> BoardGenerator::generate(
 	for (int rx = 0; rx < int(text.size()); ++rx)
 		parse_single_row(*board_ptr, rx, text[rx]);
 
+	if (!board_ptr->is_valid())
+	{
+		std::cout << "BoardGenerator: invalid board:\n"
+			<< board_ptr->to_string()
+			<< std::endl;
+
+		board_ptr.reset();
+	}
+
 	return board_ptr;
 }
 

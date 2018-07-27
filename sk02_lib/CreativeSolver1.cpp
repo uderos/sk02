@@ -93,7 +93,8 @@ bool CreativeSolver1::solve_by_guessing_single_attempt(
 			<< std::endl;
 
 		temp_board.clear_cell_candidate(cell_coords_t(rx, cx), digit);
-		is_solved = simple_solver.solve(temp_board);
+		is_solved = simple_solver.solve(temp_board) && 
+					temp_board.is_valid();
 	}
 	catch (const std::exception & exh)
 	{
