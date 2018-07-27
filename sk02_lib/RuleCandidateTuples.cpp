@@ -65,8 +65,7 @@ bool RuleCandidateTuples::is_tuple_found(
 							 (counter < NUM_DIGITS - 1) &&
 							 (counter == target_tuple.count());
 
-	if (tuple_found)
-		std::cout << "TUPLE FOUND\n";
+//	if (tuple_found) std::cout << "TUPLE FOUND\n";
 
 	return tuple_found;
 }

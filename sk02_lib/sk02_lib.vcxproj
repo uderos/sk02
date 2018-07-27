@@ -153,6 +153,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CellRefSet.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="CreativeSolver1.h" />
     <ClInclude Include="IRule.h" />
     <ClInclude Include="ISolver.h" />
     <ClInclude Include="RuleCandidateTuples.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="BoardGenerator.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CellRefSet.cpp" />
+    <ClCompile Include="CreativeSolver1.cpp" />
     <ClCompile Include="RuleCandidateTuples.cpp" />
     <ClCompile Include="RuleUpdateCandidates.cpp" />
     <ClCompile Include="SimpleSolver.cpp" />

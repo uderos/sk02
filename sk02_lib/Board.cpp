@@ -11,16 +11,12 @@ Board::Board()
 			add_dirty_set(eCellSetType(tx), idx);
 }
 
-Board::Board(const Board & rv) :
-	cell_list_(rv.cell_list_)
+Board::Board(const Board & rv)
 {
-	for (int tx = 0; tx < eCellSetType::NUM_CELL_SET_TYPES; ++tx)
-		for (int idx = 0; idx < BOARD_SIZE; ++idx)
-			sets_[tx][idx] = std::make_unique<CellRefSet>(*rv.sets_[tx][idx]);
-
-	for (const auto & raw_idx : rv.dirty_sets_)
-		dirty_sets_.insert(raw_idx);
+	copy_from(rv);
 }
+
+
 
 //Board::Board(Board && rv) :
 //	cells_ptr_(std::move(rv.cells_ptr_))
@@ -30,6 +26,28 @@ Board::Board(const Board & rv) :
 Board::~Board()
 {
 }
+
+Board & Board::operator=(const Board & rv)
+{
+	copy_from(rv);
+	return (*this);
+}
+
+
+void Board::copy_from(const Board & rv)
+{
+	cell_list_ = rv.cell_list_;
+
+	for (int tx = 0; tx < eCellSetType::NUM_CELL_SET_TYPES; ++tx)
+		for (int idx = 0; idx < BOARD_SIZE; ++idx)
+			sets_[tx][idx] = std::make_unique<CellRefSet>(*rv.sets_[tx][idx]);
+
+	for (const auto & raw_idx : rv.dirty_sets_)
+		dirty_sets_.insert(raw_idx);
+}
+
+
+
 
 const Cell & Board::operator()(const int rx, const int cx) const
 {

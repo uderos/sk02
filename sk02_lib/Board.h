@@ -22,6 +22,8 @@ public:
 	const Cell & operator()(const CellRefSet & cell_set, const int idx) const;
 	const Cell & operator()(const cell_coords_t & cell_coords) const;
 
+	Board & operator=(const Board & rv);
+
 
 
 	const CellRefSet & get_set(const int idx) const;
@@ -52,6 +54,9 @@ private:
 
 	std::unordered_set<int> dirty_sets_;
 //	std::set<int> dirty_sets_;
+
+	void copy_from(const Board & rv);
+
 
 	Cell & get_cell(const int rx, const int cx);
 	const Cell & get_cell(const int rx, const int cx) const;
