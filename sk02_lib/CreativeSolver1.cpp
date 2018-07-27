@@ -34,18 +34,18 @@ bool CreativeSolver1::solve_by_guessing(
 		<< " - starting from:\n" << board.to_string() 
 		<< std::endl;
 
-	bool is_solved = board.is_solved();
+	const cell_list_t cell_list = get_cell_list(board);
 
-	for (int rx = 0; (!is_solved) && (rx < BOARD_SIZE); ++rx)
+	for (const auto & cell_info : cell_list)
 	{
-		for (int cx = 0; (!is_solved) && (cx < BOARD_SIZE); ++cx)
-		{
-			is_solved = is_solved || 
-						solve_by_guessing_single_cell(board, rx, cx, simple_solver);
-		}
+		const bool is_solved = solve_by_guessing_single_cell(
+			board, cell_info.coords.rx, cell_info.coords.cx, simple_solver);
+
+		if (is_solved)
+			return true;
 	}
 
-	return is_solved;
+	return false;
 }
 
 bool CreativeSolver1::solve_by_guessing_single_cell(
@@ -102,6 +102,38 @@ bool CreativeSolver1::solve_by_guessing_single_attempt(
 	}
 
 	return is_solved;
+}
+
+CreativeSolver1::cell_list_t 
+CreativeSolver1::get_cell_list(const Board & board) const
+{
+	cell_list_t cell_list;
+
+	for (int rx = 0; rx < BOARD_SIZE; ++rx)
+	{
+		for (int cx = 0; cx < BOARD_SIZE; ++cx)
+		{
+			const Cell & cell(board(rx, cx));
+
+			if (!cell.is_solved())
+				cell_list.emplace_back(rx, cx, cell.get_candidates().count());
+		}
+	}
+
+	auto sort_fn = [](const cell_data_t & a, const cell_data_t & b) -> bool {
+		return (a.num_candidates < b.num_candidates);
+	};
+	std::sort(cell_list.begin(), cell_list.end(), sort_fn);
+
+	//for (const auto & p : cell_list)
+	//	std::cout << "CELL LIST:"
+	//	<< " rx=" << p.coords.rx
+	//	<< " cx=" << p.coords.cx
+	//	<< " nc=" << p.num_candidates
+	//	<< " " << board(p.coords.rx, p.coords.cx).get_candidates().to_string()
+	//	<< std::endl;
+
+	return cell_list;
 }
 
 
